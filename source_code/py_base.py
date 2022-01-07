@@ -1,6 +1,7 @@
 import pygame
 
 
+# Класс для всего на экране
 class PyObjectBase(object):
     def text_input(self, *args) -> None:
         pass

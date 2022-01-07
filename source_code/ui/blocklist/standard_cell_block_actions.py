@@ -15,6 +15,7 @@ from source_code.windows.base_window import BaseWindow
 
 def make_copy_block(cell_block: CellInBlockList,
                     base_game_window: BaseGameWindow) -> Callable:
+    """Сделать копию блока на поле"""
     def cmd() -> None:
         new_block = cell_block.copy_block.copy()
         base_game_window.all_blocks.append(new_block)
@@ -23,37 +24,4 @@ def make_copy_block(cell_block: CellInBlockList,
         new_block.rect.y = pygame.mouse.get_pos()[1] - new_block.rect.h // 2
         new_block.is_dragging = True
         new_block.last_mouse_pos = pygame.mouse.get_pos()
-    return cmd
-
-
-def choose_for_edit_block(cell_block_name: str) -> Callable:
-    def cmd() -> None:
-        from source_code.windows.sandbox_window import SandboxWindow
-
-        global_vars.ACTIVE_WINDOW = SandboxWindow(cell_block_name)
-    return cmd
-
-
-def delete_custom_block_row(del_cell_in_list: CellInList, pytable: PyTable,
-                            block_list_id: int) -> Callable:
-    def cmd() -> None:
-        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
-        cur = con.cursor()
-
-        py_row_id = None
-        for pylist_id, pylist in enumerate(pytable.pylists):
-            if del_cell_in_list in pylist.cells:
-                py_row_id = pylist.cells.index(del_cell_in_list)
-        if py_row_id is None:
-            return
-
-        block_name = pytable.pylists[block_list_id].cells[py_row_id].text
-        for pylist in pytable.pylists:
-            del pylist.cells[py_row_id]
-        print(block_name)
-
-        cur.execute(f'DELETE FROM ALL_CUSTOM_BLOCKS '
-                    f'WHERE BLOCK_NAME="{block_name}"')
-        con.commit()
-        con.close()
     return cmd

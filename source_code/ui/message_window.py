@@ -6,6 +6,7 @@ from source_code.py_base import PyObjectBase
 
 
 class MessageWindow(PyObjectBase):
+    """Что-то наподобии диалогового окна"""
     def __init__(self, text: str, rect: pygame.Rect):
         self.text = text
         self.rect = rect

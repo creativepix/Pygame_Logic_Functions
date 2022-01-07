@@ -8,6 +8,7 @@ from source_code.constants import BLOCKS_WIDTH, BLOCKS_NAME_COLOR, \
 
 
 class CellInList:
+    """Ячейка в списке"""
     def __init__(self, text: Union[str, Callable[[], str]],
                  action: Callable, size: Tuple[int, int] = None,
                  img: Union[pygame.Surface, str] = None):

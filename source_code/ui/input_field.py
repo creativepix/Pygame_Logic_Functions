@@ -6,7 +6,9 @@ import pygame
 from source_code.py_base import PyObjectBase
 
 
+# Поле ввода. Такие классы хранятся в BaseWindow`ах в списке all_inp_fields
 class PyInputField(PyObjectBase):
+    """Ui-поле ввода"""
     def __init__(self, font: pygame.font.Font, color: pygame.Color,
                  rect: pygame.Rect, enter_action: Callable[[str], None],
                  max_symbols: int, started_text: str = ''):

@@ -108,6 +108,7 @@ class SandboxWindow(BaseGameWindow):
         if self.message_window is not None:
             self.message_window.render(screen)
 
+    # загрузка сохранённой структуры
     def load(self, structure_line: str, cursor: sqlite3.Cursor = None) -> None:
         if not any(structure_line):
             return
@@ -181,7 +182,7 @@ class SandboxWindow(BaseGameWindow):
 
                 con_ids = [check_digit(put_con.split(',')[0]),
                            [check_digit(elem) for elem in
-                            put_con.split('[')[1].split(']')[0].split(',')]]
+                            put_con.split('[')[1].split(']')[0].split(', ')]]
                 all_con_ids[con_ids[0]] = new_connection
                 needed_con_ids[new_connection] = con_ids[1]
 
@@ -244,6 +245,7 @@ class SandboxWindow(BaseGameWindow):
                         all_con_ids[con_to_edit_id] is not None:
                     con_to_edit.attach(all_con_ids[con_to_edit_id])
 
+    # сохранение нынешней структуры
     def save(self, custom_block_name: str) -> None:
         inputs = []
         structure = []

@@ -5,7 +5,9 @@ from source_code.constants import BLOCK_LIST_WIDTH
 from source_code.ui.list.cell_in_list import CellInList
 
 
+# Горизонтальность нетестирована, поэтому с ней могут быть проблемы
 class PyList(PyObjectBase):
+    """Ui-список"""
     def __init__(self, cells: List[CellInList],
                  rect: pygame.Rect,
                  orientation: int,

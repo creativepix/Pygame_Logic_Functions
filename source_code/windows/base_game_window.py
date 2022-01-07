@@ -7,6 +7,7 @@ from source_code.windows.base_window import BaseWindow, disable_if_message, \
     mouse_down_check_message
 
 
+# Базовое игровое окно. На нём базируются песочница и сама игра
 class BaseGameWindow(BaseWindow):
     def __init__(self, available_blocklists: Iterable):
         from source_code.block_scheme.blocks.builder_base_block import \

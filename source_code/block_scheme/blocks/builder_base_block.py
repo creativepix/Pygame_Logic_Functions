@@ -48,6 +48,7 @@ class BuilderBaseBlock(PyObjectBase):
 
     @abstractmethod
     def is_selected(self) -> bool:
+        """Наведена ли мышка на блок"""
         pass
 
     @abstractmethod
@@ -56,5 +57,6 @@ class BuilderBaseBlock(PyObjectBase):
 
     @abstractmethod
     def update_output_signals(self):
+        """Обновляет все выходные сигналы у блока"""
         pass
 

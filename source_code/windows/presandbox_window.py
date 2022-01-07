@@ -10,16 +10,16 @@ from source_code.constants import BLOCK_MIN_SIZE, BLOCK_LIST_WIDTH, TEXT_COLOR, 
 from source_code.global_vars import ACTIVE_SCREEN
 from source_code.ui.blocklist.blocklist import BlockList
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
-from source_code.ui.blocklist.standard_cell_block_actions import \
-    choose_for_edit_block, delete_custom_block_row
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
 from source_code.ui.list.standard_cell_list_actions import \
-    open_entering_custom_block_name
+    open_entering_custom_block_name, choose_for_edit_block, \
+    delete_custom_block_row
 from source_code.ui.table import PyTable
 from source_code.windows.base_window import BaseWindow, disable_if_message
 
 
+# окно, в котором происходит выбор блока для редактирования в песочнице
 class PresandboxWindow(BaseWindow):
     def __init__(self):
         super().__init__()

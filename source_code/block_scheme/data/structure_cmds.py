@@ -3,6 +3,7 @@ from typing import Dict, Tuple, List
 from source_code.errors.block_error import BlockError
 
 
+# метод по получению cmd линиипо id-коннектора
 def get_connection_cmd_line(
         input_connection: int, all_connnections: Dict[int, int],
         all_blocks: Dict[Tuple[List[int], List[int]], Tuple[str, str]],
@@ -61,6 +62,7 @@ def get_connection_cmd_line(
     return 'False'
 
 
+# получение cmd линии по структурной линии
 def get_cmd_line_from_structure(structure_line: str,
                                 cur: sqlite3.Cursor = None) -> str:
     if not any(structure_line):

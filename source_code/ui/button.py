@@ -6,7 +6,9 @@ from source_code.constants import BLOCKS_WIDTH, BUTTON_RECT_COLOR
 from source_code.py_base import PyObjectBase
 
 
+# Такие классы хранятся в BaseWindow`ах в списке all_bts
 class PyButton(PyObjectBase):
+    """Ui-кнопка"""
     def __init__(self, text: str, font: pygame.font.Font, color: pygame.Color,
                  rect: pygame.Rect, action: Callable):
         self.text = text
