@@ -13,12 +13,13 @@ class BaseBlock(BuilderBaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  name: str, rect: pygame.rect.Rect,
                  signal_action: Callable[
-                     [List[BuilderBaseConnection]], List[bool]],
+                     [List[bool]], List[bool]],
                  inputs: List[BuilderBaseConnection],
                  outputs: List[BuilderBaseConnection],
                  img: Union[str, pygame.Surface] = None):
         super().__init__(base_game_window, name, rect, signal_action,
                          inputs, outputs, img)
+        self.update_output_signals()
 
     def zoom(self, koof: int) -> None:
         last_center = self.rect.center
@@ -112,7 +113,7 @@ class BaseBlock(BuilderBaseBlock):
                 return
         self.last_rect = self.rect.copy()
 
-    def update_connection_signals(self):
+    def update_output_signals(self):
         if any(self.inputs) and any(self.outputs):
             signal = self.signal_action([inp.signal for inp in self.inputs])
             for output_id, output_con in enumerate(self.outputs):

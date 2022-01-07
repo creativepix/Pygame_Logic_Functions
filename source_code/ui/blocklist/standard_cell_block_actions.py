@@ -26,11 +26,11 @@ def make_copy_block(cell_block: CellInBlockList,
     return cmd
 
 
-def choose_for_edit_block(cell_block: BuilderBaseBlock) -> Callable:
+def choose_for_edit_block(cell_block_name: str) -> Callable:
     def cmd() -> None:
         from source_code.windows.sandbox_window import SandboxWindow
 
-        global_vars.ACTIVE_WINDOW = SandboxWindow(cell_block.name)
+        global_vars.ACTIVE_WINDOW = SandboxWindow(cell_block_name)
     return cmd
 
 

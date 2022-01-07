@@ -14,7 +14,11 @@ class InputConnection(BaseConnection):
                 self.detach(self.attached_connections[0])
             self.attached_connections.append(to_connection)
             to_connection.attached_connections.append(self)
-            to_connection.signal = self.signal
+            self.signal = to_connection.signal
+
+    def detach(self, connection: BuilderBaseConnection) -> None:
+        super().detach(connection)
+        self.signal = False
 
     @property
     def attached_connection(self):

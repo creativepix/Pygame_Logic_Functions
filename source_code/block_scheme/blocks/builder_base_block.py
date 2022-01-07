@@ -55,6 +55,6 @@ class BuilderBaseBlock(PyObjectBase):
         pass
 
     @abstractmethod
-    def update_connection_signals(self):
+    def update_output_signals(self):
         pass
 

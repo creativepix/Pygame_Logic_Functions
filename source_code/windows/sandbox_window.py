@@ -84,12 +84,21 @@ class SandboxWindow(BaseGameWindow):
 
         self.all_btns = [self.save_btn, self.back_btn]
 
-        structure = cur.execute(
-            f"SELECT STRUCTURE FROM ALL_CUSTOM_BLOCKS "
+        info = cur.execute(
+            f"SELECT STRUCTURE, INPUTS FROM ALL_CUSTOM_BLOCKS "
             f"WHERE BLOCK_NAME = '{self.editing_block_name}'").fetchall()
-        if any(structure):
-            self.load(structure[0][0])
-
+        if any(info):
+            self.load(info[0][0])
+            if info[0][1] is not None:
+                input_signals = [input_signal == 'True' for input_signal in
+                                 info[0][1].split(' ')]
+                input_blocks = [block for block in self.all_blocks
+                                if isinstance(block, InputBlock)]
+                for i, block in enumerate(input_blocks):
+                    try:
+                        block.outputs[0].signal = input_signals[i]
+                    except IndexError:
+                        block.outputs[0].signal = False
         con.close()
 
     def tick(self, screen: pygame.Surface) -> None:
@@ -223,6 +232,8 @@ class SandboxWindow(BaseGameWindow):
             new_block.rect.w = min_side
             new_block.rect.h = min_side
 
+            new_block.update_output_signals()
+
             self.all_blocks.append(new_block)
 
         for con_to_edit, cons_to_edit_id in needed_con_ids.items():
@@ -234,18 +245,27 @@ class SandboxWindow(BaseGameWindow):
                     con_to_edit.attach(all_con_ids[con_to_edit_id])
 
     def save(self, custom_block_name: str) -> None:
-        structure = '|'.join([str(block) for block in self.all_blocks]
-                             ).strip('|')
+        inputs = []
+        structure = []
+        for block in self.all_blocks:
+            if isinstance(block, InputBlock):
+                inputs.append(str(block.outputs[0].signal))
+            structure.append(str(block))
+        structure = '|'.join(structure).strip('|')
+        inputs = ' '.join(inputs)
 
         con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
         cur = con.cursor()
-        my_id = cur.execute(f"""SELECT ID FROM ALL_CUSTOM_BLOCKS
+        my_id = cur.execute(f"""
+SELECT ID FROM ALL_CUSTOM_BLOCKS
 WHERE BLOCK_NAME = '{custom_block_name}'""").fetchall()
         if any(my_id):
             my_id = my_id[0][0]
-            cur.execute(f"""UPDATE ALL_CUSTOM_BLOCKS
+            cur.execute(f"""
+UPDATE ALL_CUSTOM_BLOCKS
 SET BLOCK_NAME = '{custom_block_name}',
-STRUCTURE = '{structure}'
+STRUCTURE = '{structure}',
+INPUTS = '{inputs}'
 WHERE ID = {my_id}""")
         else:
             last_id = cur.execute(f"""SELECT MAX(ID) FROM ALL_CUSTOM_BLOCKS"""
@@ -253,7 +273,8 @@ WHERE ID = {my_id}""")
             if last_id is None:
                 last_id = 0
             last_id += 1
-            cur.execute(f"""INSERT INTO ALL_CUSTOM_BLOCKS VALUES({last_id},
-'{custom_block_name}','{structure}')""")
+            cur.execute(f"""
+INSERT INTO ALL_CUSTOM_BLOCKS 
+VALUES({last_id},'{custom_block_name}','{structure}','{inputs}','')""")
         con.commit()
         con.close()

@@ -16,6 +16,10 @@ class OutputConnection(BaseConnection):
             to_connection.attached_connections.append(self)
             to_connection.signal = self.signal
 
+    def detach(self, connection: BuilderBaseConnection) -> None:
+        super().detach(connection)
+        connection.signal = False
+
     def __str__(self):
         return self.__repr__()
 

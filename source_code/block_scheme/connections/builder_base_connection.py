@@ -24,6 +24,14 @@ class BuilderBaseConnection(PyObjectBase):
 
         self._signal = False
 
+    @property
+    def signal(self) -> bool:
+        return self._signal
+
+    @signal.setter
+    def signal(self, value) -> None:
+        self._signal = value
+
     @abstractmethod
     def get_rect(self) -> pygame.Rect:
         pass

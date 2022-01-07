@@ -80,7 +80,6 @@ class BaseConnection(BuilderBaseConnection):
 
     def detach(self, connection: BuilderBaseConnection) -> None:
         if self in connection.attached_connections:
-            connection.signal = False
             del connection.attached_connections[
                 connection.attached_connections.index(self)]
             del self.attached_connections[
@@ -92,10 +91,11 @@ class BaseConnection(BuilderBaseConnection):
 
     @signal.setter
     def signal(self, value) -> None:
-        self._signal = value
-        for attached_connection in self.attached_connections:
-            attached_connection._signal = self._signal
-            attached_connection.parent_block.update_connection_signals()
+        if self._signal != value:
+            self._signal = value
+            self.parent_block.update_output_signals()
+            for attached_connection in self.attached_connections:
+                attached_connection.signal = self._signal
 
     def copy(self):
         return self.__copy__()

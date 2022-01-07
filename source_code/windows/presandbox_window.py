@@ -5,10 +5,6 @@ import pygame
 from source_code import global_vars
 from source_code.block_scheme.blocks.and_block import AndBlock
 from source_code.block_scheme.blocks.custom_block import CustomBlock
-from source_code.block_scheme.blocks.input_block import InputBlock
-from source_code.block_scheme.blocks.not_block import NotBlock
-from source_code.block_scheme.blocks.or_block import OrBlock
-from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.constants import BLOCK_MIN_SIZE, BLOCK_LIST_WIDTH, TEXT_COLOR, \
     TABLE_X_SYMBOL_SIZE
 from source_code.global_vars import ACTIVE_SCREEN
@@ -37,11 +33,9 @@ class PresandboxWindow(BaseWindow):
 
         cells_in_list, del_cells_in_list = [], []
         for custom_block in all_custom_blocks:
-            block = CustomBlock(custom_block[0], custom_block[1],
-                                self, size_blocks, img=custom_block[2])
             cell_in_list = CellInList(
-                custom_block[0], choose_for_edit_block(block),
-                img=block.img)
+                custom_block[0], choose_for_edit_block(custom_block[0]),
+                img=custom_block[2])
             cells_in_list.append(cell_in_list)
 
             cell_in_list = CellInList('x', lambda: None, TABLE_X_SYMBOL_SIZE)

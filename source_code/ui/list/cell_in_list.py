@@ -16,7 +16,7 @@ class CellInList:
         else:
             self.size = BASE_CELL_IN_BLOCK_SIZE
         if isinstance(img, str):
-            self.img = pygame.image.load(img)
+            self.img = pygame.image.load(img) if any(img) else None
         else:
             self.img = img
         if isinstance(self.img, pygame.Surface):
