@@ -10,9 +10,11 @@ from source_code.windows.base_game_window import BaseGameWindow
 class NotBlock(BaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  rect: pygame.rect.Rect):
-        super().__init__(base_game_window, 'not', rect, [
-            InputConnection(base_game_window, self, (50, 100))
-        ], [OutputConnection(base_game_window, self, (50, 0))])
+        super().__init__(
+            base_game_window, 'not', rect,
+            lambda inputs: [not inputs[0]], [
+                InputConnection(base_game_window, self, (50, 100))
+            ], [OutputConnection(base_game_window, self, (50, 0))])
 
     def __str__(self):
         return self.__repr__()

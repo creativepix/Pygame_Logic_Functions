@@ -14,6 +14,7 @@ class OutputConnection(BaseConnection):
                 to_connection.detach(attached_connection)
             self.attached_connections.append(to_connection)
             to_connection.attached_connections.append(self)
+            to_connection.signal = self.signal
 
     def __str__(self):
         return self.__repr__()

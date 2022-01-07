@@ -1,7 +1,9 @@
-from typing import List
+from typing import List, Union, Callable
 import pygame
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 from source_code.block_scheme.connections.base_connection import BaseConnection
+from source_code.block_scheme.connections.builder_base_connection import \
+    BuilderBaseConnection
 from source_code.constants import BLOCKS_COLOR, BLOCKS_NAME_COLOR, \
     BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE
 from source_code.windows.base_game_window import BaseGameWindow
@@ -10,16 +12,19 @@ from source_code.windows.base_game_window import BaseGameWindow
 class BaseBlock(BuilderBaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  name: str, rect: pygame.rect.Rect,
-                 inputs: List[BaseConnection],
-                 outputs: List[BaseConnection], img_path: str = None):
-        super().__init__(base_game_window, name, rect, inputs, outputs,
-                         img_path)
+                 signal_action: Callable[
+                     [List[BuilderBaseConnection]], List[bool]],
+                 inputs: List[BuilderBaseConnection],
+                 outputs: List[BuilderBaseConnection],
+                 img: Union[str, pygame.Surface] = None):
+        super().__init__(base_game_window, name, rect, signal_action,
+                         inputs, outputs, img)
 
     def zoom(self, koof: int) -> None:
         last_center = self.rect.center
         self.resize(koof * 2, koof * 2)
         self.rect.center = last_center
-        self.last_pos = self.rect.x, self.rect.y
+        self.last_rect = self.rect.copy()
 
     def move(self, x_dif: int, y_dif: int) -> None:
         self.rect = self.rect.move(x_dif, y_dif)
@@ -28,10 +33,12 @@ class BaseBlock(BuilderBaseBlock):
         return self.rect.collidepoint(*pygame.mouse.get_pos())
 
     def resize(self, w_dif: int, h_dif: int) -> None:
-        if self.rect.w + w_dif >= BLOCK_MIN_SIZE[0] or w_dif >= 0:
-            self.rect.w = max(BLOCK_MIN_SIZE[0], self.rect.w + w_dif)
-        if self.rect.h >= BLOCK_MIN_SIZE[1] or h_dif >= 0:
-            self.rect.h = max(BLOCK_MIN_SIZE[1], self.rect.h + h_dif)
+        dif = (w_dif + h_dif) // 2
+        if not ((self.rect.w + dif >= BLOCK_MIN_SIZE[0] or dif >= 0) and\
+                (self.rect.h + dif >= BLOCK_MIN_SIZE[1] or dif >= 0)):
+            return
+        self.rect.w = max(BLOCK_MIN_SIZE[0], self.rect.w + dif)
+        self.rect.h = max(BLOCK_MIN_SIZE[1], self.rect.h + dif)
 
     def render(self, screen: pygame.Surface) -> None:
         if self.img is None:
@@ -44,21 +51,8 @@ class BaseBlock(BuilderBaseBlock):
             font_rect.center = self.rect.center
             screen.blit(widget, font_rect)
         else:
-
-            img = pygame.transform.scale(self.img, self.rect.size)
+            img = pygame.transform.smoothscale(self.img, self.rect.size)
             screen.blit(img, self.rect.topleft)
-
-            top_left = pygame.Rect(*self.rect.topleft, 10, 10)
-            pygame.draw.rect(screen, BLOCKS_COLOR, top_left)
-            top_right = pygame.Rect(self.rect.topright[0] - 10,
-                                    self.rect.topright[1], 10, 10)
-            pygame.draw.rect(screen, BLOCKS_COLOR, top_right)
-            bottom_left = pygame.Rect(self.rect.bottomleft[0],
-                                      self.rect.bottomleft[1] - 10, 10, 10)
-            pygame.draw.rect(screen, BLOCKS_COLOR, bottom_left)
-            bottom_right = pygame.Rect(self.rect.bottomright[0] - 10,
-                                       self.rect.bottomright[1] - 10, 10, 10)
-            pygame.draw.rect(screen, BLOCKS_COLOR, bottom_right)
 
         for connection in self.inputs + self.outputs:
             connection.render(screen)
@@ -114,10 +108,15 @@ class BaseBlock(BuilderBaseBlock):
         for collide_rect in self.base_game_window.all_blocks:
             if self.rect is not collide_rect.rect and \
                     self.rect.colliderect(collide_rect.rect):
-                self.rect.x = self.last_pos[0]
-                self.rect.y = self.last_pos[1]
+                self.rect = self.last_rect.copy()
                 return
-        self.last_pos = self.rect.x, self.rect.y
+        self.last_rect = self.rect.copy()
+
+    def update_connection_signals(self):
+        if any(self.inputs) and any(self.outputs):
+            signal = self.signal_action([inp.signal for inp in self.inputs])
+            for output_id, output_con in enumerate(self.outputs):
+                output_con.signal = signal[output_id]
 
     def delete(self) -> None:
         for connection in self.inputs + self.outputs:

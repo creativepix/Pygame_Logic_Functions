@@ -31,23 +31,23 @@ class PresandboxWindow(BaseWindow):
         con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
         cur = con.cursor()
         all_custom_blocks = cur.execute(
-            f"""SELECT BLOCK_NAME, STRUCTURE FROM ALL_CUSTOM_BLOCKS"""). \
-            fetchall()
+            f"SELECT BLOCK_NAME, STRUCTURE, IMAGE_PATH "
+            f"FROM ALL_CUSTOM_BLOCKS").fetchall()
         size_blocks = pygame.Rect(0, 0, *BLOCK_MIN_SIZE)
 
         cells_in_list, del_cells_in_list = [], []
         for custom_block in all_custom_blocks:
             block = CustomBlock(custom_block[0], custom_block[1],
-                                self, size_blocks)
+                                self, size_blocks, img=custom_block[2])
             cell_in_list = CellInList(
-                custom_block[0], BLOCK_MIN_SIZE, choose_for_edit_block(block))
+                custom_block[0], choose_for_edit_block(block),
+                img=block.img)
             cells_in_list.append(cell_in_list)
 
-            cell_in_list = CellInList('x', TABLE_X_SYMBOL_SIZE, lambda: None)
+            cell_in_list = CellInList('x', lambda: None, TABLE_X_SYMBOL_SIZE)
             del_cells_in_list.append(cell_in_list)
 
-        adding_cell_in_block_list = CellInList(
-            '+', BLOCK_MIN_SIZE, lambda: None)
+        adding_cell_in_block_list = CellInList('+', lambda: None)
         adding_cell_in_block_list.action = open_entering_custom_block_name(
             self, adding_cell_in_block_list)
         cells_in_list.append(adding_cell_in_block_list)
@@ -55,7 +55,8 @@ class PresandboxWindow(BaseWindow):
         rect = pygame.Rect(0, 150, ACTIVE_SCREEN.get_width(),
                            ACTIVE_SCREEN.get_height() - 150)
         choose_list = PyList(cells_in_list, rect, 0, (0, 0, 0, 0))
-        rect = pygame.Rect(size_blocks.w, rect.y, rect.w, rect.h)
+        rect = pygame.Rect(size_blocks.w - TABLE_X_SYMBOL_SIZE[0] // 3 * 2,
+                           rect.y, rect.w, rect.h)
         del_cells_list = PyList(del_cells_in_list, rect, 0, (0, 0, 0, 0))
         self.choose_edit_block_table = PyTable([choose_list, del_cells_list])
 

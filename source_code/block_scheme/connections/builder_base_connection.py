@@ -15,13 +15,14 @@ class BuilderBaseConnection(PyObjectBase):
         self.parent_block = parent_block
         self.local_coord_percents = (0, 0)
         self.local_w = 0
-        self.color = BLOCKS_COLOR
         self.attached_connections = []
         self.is_attached_to_cursor = False
 
         self.base_game_window = base_game_window
         self.local_coord_percents = local_coord_percents
         self.local_radius_percentage = CONNECTION_LOCAL_RADIUS_PERCENTAGE
+
+        self._signal = False
 
     @abstractmethod
     def get_rect(self) -> pygame.Rect:

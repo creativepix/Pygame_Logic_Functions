@@ -20,5 +20,8 @@ class PyObjectBase(object):
     def mouse_wheel(self, *args) -> None:
         pass
 
+    def double_mouse_click(self, *args) -> None:
+        pass
+
     def render(self, screen: pygame.Surface) -> None:
         pass

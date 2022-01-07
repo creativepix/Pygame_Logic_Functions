@@ -8,8 +8,9 @@ from source_code.windows.base_game_window import BaseGameWindow
 class OutputBlock(BaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  rect: pygame.rect.Rect):
-        super().__init__(base_game_window, 'output', rect, [
-            InputConnection(base_game_window, self, (100 // 2, 100))], [])
+        super().__init__(
+            base_game_window, 'output', rect, lambda inputs: [],
+            [InputConnection(base_game_window, self, (100 // 2, 100))], [])
 
     def __str__(self):
         return self.__repr__()

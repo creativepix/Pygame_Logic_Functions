@@ -8,9 +8,16 @@ from source_code.windows.base_game_window import BaseGameWindow
 class InputBlock(BaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  rect: pygame.rect.Rect):
-        super().__init__(base_game_window, 'input', rect, [], [
-            OutputConnection(base_game_window, self, (100 // 2, 0))
-        ])
+        super().__init__(
+            base_game_window, 'input', rect,
+            lambda inputs: [], [], [
+                OutputConnection(base_game_window, self, (100 // 2, 0))
+            ])
+
+    def double_mouse_click(self) -> None:
+        if self.is_selected():
+            for out_con in self.outputs:
+                out_con.signal = not out_con.signal
 
     def __str__(self):
         return self.__repr__()

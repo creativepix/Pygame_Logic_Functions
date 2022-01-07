@@ -5,8 +5,9 @@ import pygame
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
-from source_code.constants import BLOCKS_COLOR, BLOCK_CONNECTION_COLOR, \
-    BLOCKS_INDENT_FOR_RESIZING, CONNECTION_LOCAL_RADIUS_PERCENTAGE
+from source_code.constants import BLOCKS_COLOR, BLOCK_CONNECTION_TRUE_COLOR, \
+    BLOCK_CONNECTION_FALSE_COLOR, BLOCKS_INDENT_FOR_RESIZING, \
+    CONNECTION_LOCAL_RADIUS_PERCENTAGE
 from source_code.windows.base_game_window import BaseGameWindow
 
 
@@ -18,7 +19,9 @@ class BaseConnection(BuilderBaseConnection):
 
     def render(self, screen: pygame.Surface) -> None:
         p_rect = self.parent_block.rect
-        pygame.draw.circle(screen, self.color, [
+        color = (BLOCK_CONNECTION_TRUE_COLOR if self.signal else
+                 BLOCK_CONNECTION_FALSE_COLOR)
+        pygame.draw.circle(screen, color, [
             int(p_rect.x + p_rect.w / 100 * self.local_coord_percents[0]),
             int(p_rect.y + p_rect.h / 100 * self.local_coord_percents[1])
         ], min(
@@ -27,14 +30,14 @@ class BaseConnection(BuilderBaseConnection):
         ))
 
         if self.is_attached_to_cursor:
-            pygame.draw.line(screen, BLOCK_CONNECTION_COLOR,
-                             self.get_rect().center, pygame.mouse.get_pos(),
+            pygame.draw.line(screen, color, self.get_rect().center,
+                             pygame.mouse.get_pos(),
                              width=BLOCKS_INDENT_FOR_RESIZING)
 
         for attached_connection in self.attached_connections:
             if attached_connection is not None:
                 to_coords = attached_connection.get_rect().center
-                pygame.draw.line(screen, BLOCK_CONNECTION_COLOR,
+                pygame.draw.line(screen, color,
                                  self.get_rect().center, to_coords,
                                  width=BLOCKS_INDENT_FOR_RESIZING)
 
@@ -73,13 +76,26 @@ class BaseConnection(BuilderBaseConnection):
     def attach(self, to_connection: BuilderBaseConnection) -> None:
         self.attached_connections.append(to_connection)
         to_connection.attached_connections.append(self)
+        to_connection.signal = self.signal
 
     def detach(self, connection: BuilderBaseConnection) -> None:
         if self in connection.attached_connections:
+            connection.signal = False
             del connection.attached_connections[
                 connection.attached_connections.index(self)]
             del self.attached_connections[
                 self.attached_connections.index(connection)]
+
+    @property
+    def signal(self) -> bool:
+        return self._signal
+
+    @signal.setter
+    def signal(self, value) -> None:
+        self._signal = value
+        for attached_connection in self.attached_connections:
+            attached_connection._signal = self._signal
+            attached_connection.parent_block.update_connection_signals()
 
     def copy(self):
         return self.__copy__()

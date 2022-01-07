@@ -1,5 +1,5 @@
 import sqlite3
-from typing import List, Callable, Type, Tuple
+from typing import List, Type
 
 import pygame
 
@@ -33,8 +33,8 @@ class SandboxWindow(BaseGameWindow):
         con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
         cur = con.cursor()
         all_custom_blocks = cur.execute(
-            f"""SELECT BLOCK_NAME, STRUCTURE FROM ALL_CUSTOM_BLOCKS""").\
-            fetchall()
+            f"SELECT BLOCK_NAME, STRUCTURE, IMAGE_PATH "
+            f"FROM ALL_CUSTOM_BLOCKS").fetchall()
         size_blocks = pygame.Rect(0, 0, *BLOCK_MIN_SIZE)
 
         base_blocklists, custom_blocklists = [], []
@@ -50,7 +50,7 @@ class SandboxWindow(BaseGameWindow):
             if custom_block[0] == block_name:
                 continue
             block = CustomBlock(custom_block[0], custom_block[1],
-                                self, size_blocks)
+                                self, size_blocks, img=custom_block[2])
             cell_block = CellInBlockList(block, lambda: None)
             cell_block.action = make_copy_block(cell_block, self)
             custom_blocklists.append(cell_block)
@@ -129,13 +129,15 @@ class SandboxWindow(BaseGameWindow):
                 new_block = NotBlock(self, rect)
             elif name_block == 'CustomBlock':
                 name = block.split('(')[1].split(',')[0]
-                structure = cursor.execute(f'SELECT STRUCTURE '
-                                           f'FROM ALL_CUSTOM_BLOCKS '
-                                           f'WHERE BLOCK_NAME = "{name}"'
-                                           ).fetchall()
-                if any(structure):
-                    structure = structure[0][0]
-                    new_block = CustomBlock(name, structure, self, rect)
+                info = cursor.execute(f'SELECT STRUCTURE, IMAGE_PATh '
+                                      f'FROM ALL_CUSTOM_BLOCKS '
+                                      f'WHERE BLOCK_NAME = "{name}"'
+                                      ).fetchall()
+                if any(info):
+                    structure = info[0][0]
+                    image_path = info[0][1]
+                    new_block = CustomBlock(name, structure, self, rect,
+                                            img=image_path)
                 else:
                     put_cons = []
                     if 'InputConnection(' in block:
@@ -144,8 +146,8 @@ class SandboxWindow(BaseGameWindow):
                         put_cons += block.split('OutputConnection(')[1:]
                     for put_con in put_cons:
                         put_con = put_con.split('))')[0]
-                        con_ids = [check_digit(put_con.split(',')[0])]
-                        all_con_ids[con_ids[0]] = None
+                        put_con_ids = [check_digit(put_con.split(',')[0])]
+                        all_con_ids[put_con_ids[0]] = None
                     continue
             else:
                 raise BlockError(f'Name: {name_block}')
@@ -216,6 +218,11 @@ class SandboxWindow(BaseGameWindow):
             new_block.inputs = new_inputs
             new_block.outputs = new_outputs
 
+            min_side = max(BLOCK_MIN_SIZE[0],
+                           min(new_block.rect.w, new_block.rect.h))
+            new_block.rect.w = min_side
+            new_block.rect.h = min_side
+
             self.all_blocks.append(new_block)
 
         for con_to_edit, cons_to_edit_id in needed_con_ids.items():
@@ -250,59 +257,3 @@ WHERE ID = {my_id}""")
 '{custom_block_name}','{structure}')""")
         con.commit()
         con.close()
-
-    def get_command_line(self) -> str:
-        output_blocks = [block for block in self.all_blocks if
-                         isinstance(block, OutputBlock)]
-        input_blocks = [block for block in self.all_blocks if
-                        isinstance(block, InputBlock)]
-        outputs_start = ", ".join(["0" for _ in range(len(output_blocks))])
-        cmd_line = f'inputs = [{len(input_blocks)}]\noutputs = ' \
-                   f'[{outputs_start}]'
-
-        for out_b_id in range(len(output_blocks)):
-            cmd_line += f'\noutputs[{out_b_id}] = '
-
-            def get_my_line(attached_connection: BaseConnection):
-                if attached_connection is None:
-                    return '(True)'
-                block = attached_connection.parent_block
-                if isinstance(block, InputBlock):
-                    return f'(inputs[{input_blocks.index(block)}])'
-                if isinstance(block, NotBlock):
-                    got_line = get_my_line(block.inputs[0].attached_connection)
-                    return f'(not {got_line})'
-                if isinstance(block, AndBlock):
-                    got_line1 = get_my_line(
-                        block.inputs[0].attached_connection)
-                    got_line2 = get_my_line(
-                        block.inputs[1].attached_connection)
-                    return f'({got_line1} and {got_line2})'
-                if isinstance(block, OrBlock):
-                    got_line1 = get_my_line(
-                        block.inputs[0].attached_connection)
-                    got_line2 = get_my_line(
-                        block.inputs[1].attached_connection)
-                    return f'({got_line1} or {got_line2})'
-                if isinstance(block, CustomBlock):
-                    needed_id = block.outputs.index(attached_connection)
-                    # for line in block.command_line.split('\n'):
-                    #     if line.startswith(f'outputs[{needed_id}] = '):
-                    #         needed_line = \
-                    #             line.replace(f'outputs[{needed_id}] = ', '')
-                    #         for con_id, input_connection in \
-                    #                 enumerate(block.inputs):
-                    #             needed_line = needed_line.replace(
-                    #                 f'inputs[{con_id}]',
-                    #                 get_my_line(
-                    #                     input_connection.attached_connection
-                    #                 ).strip(')').strip('(')
-                    #             )
-                    #         return needed_line
-                    # raise BlockError
-                if not any(block.inputs[0].attached_connections):
-                    raise BlockError
-                return get_my_line(block.inputs[0].attached_connection)
-
-            cmd_line += get_my_line(output_blocks[out_b_id].inputs[0])
-        return cmd_line

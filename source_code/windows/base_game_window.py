@@ -103,3 +103,8 @@ class BaseGameWindow(BaseWindow):
                     for block_check in self.all_blocks
                     if block_check != block]):
                 block.zoom(-koof)
+
+    @disable_if_message
+    def double_mouse_click(self) -> None:
+        for block in self.all_blocks:
+            block.double_mouse_click()

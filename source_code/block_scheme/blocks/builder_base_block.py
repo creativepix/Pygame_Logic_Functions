@@ -6,23 +6,29 @@ from source_code.windows.base_game_window import BaseGameWindow
 
 
 class BuilderBaseBlock(PyObjectBase):
-    def __init__(self, base_game_window, name, rect, inputs, outputs,
-                 img_path=None):
+    def __init__(self, base_game_window, name, rect, signal_action,
+                 inputs, outputs, img):
         self.base_game_window = base_game_window
         self.name = name
         self.rect = rect
+        self.signal_action = signal_action
         self.inputs = inputs
         self.outputs = outputs
-        if img_path is not None:
-            self.img = pygame.image.load(img_path)
+        if isinstance(img, str):
+            if any(img):
+                self.img = pygame.image.load(img)
+            else:
+                self.img = None
         else:
-            self.img = None
+            self.img = img
+        if isinstance(self.img, pygame.Surface):
+            self.img = pygame.transform.smoothscale(self.img, self.rect.size)
 
         self.connection_editing = None
         self.is_dragging = False
         self.is_resizing = False
         self.last_mouse_pos = None
-        self.last_pos = self.rect.x, self.rect.y
+        self.last_rect = self.rect.copy()
 
     @abstractmethod
     def zoom(self, koof: int) -> None:
@@ -46,5 +52,9 @@ class BuilderBaseBlock(PyObjectBase):
 
     @abstractmethod
     def delete(self) -> None:
+        pass
+
+    @abstractmethod
+    def update_connection_signals(self):
         pass
 

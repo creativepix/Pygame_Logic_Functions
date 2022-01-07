@@ -10,10 +10,12 @@ from source_code.windows.base_game_window import BaseGameWindow
 class OrBlock(BaseBlock):
     def __init__(self, base_game_window: BaseGameWindow,
                  rect: pygame.rect.Rect):
-        super().__init__(base_game_window, 'or', rect, [
-            InputConnection(base_game_window, self, (100 // 3, 100)),
-            InputConnection(base_game_window, self, (100 // 3 * 2, 100))
-        ], [OutputConnection(base_game_window, self, (50, 0))])
+        super().__init__(
+            base_game_window, 'or', rect,
+            lambda inputs: [inputs[0] or inputs[1]], [
+                InputConnection(base_game_window, self, (100 // 3, 100)),
+                InputConnection(base_game_window, self, (100 // 3 * 2, 100))
+            ], [OutputConnection(base_game_window, self, (50, 0))])
 
     def __str__(self):
         return self.__repr__()
