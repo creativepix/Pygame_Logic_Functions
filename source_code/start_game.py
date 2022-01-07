@@ -10,8 +10,9 @@ def start():
     pygame.display.set_caption('Logic_Functions')
     screen = pygame.display.set_mode(constants.START_MENU_SIZE,
                                      pygame.RESIZABLE)
-
+    # Surface активного окна
     global_vars.ACTIVE_SCREEN = screen
+    # Активное окно
     global_vars.ACTIVE_WINDOW = MainMenuWindow()
 
     timer_db_click = 0
@@ -20,7 +21,7 @@ def start():
     clock = pygame.time.Clock()
     while global_vars.RUNNING:
         screen.fill(BACKGROUND_COLOR)
-
+        # Перерисовка окна?
         global_vars.ACTIVE_WINDOW.tick(global_vars.ACTIVE_SCREEN)
         if not global_vars.RUNNING:
             break
@@ -28,7 +29,9 @@ def start():
             if event.type == pygame.QUIT:
                 global_vars.RUNNING = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Активному окну - событие
                 global_vars.ACTIVE_WINDOW.mouse_down(event.button)
+                # Фазы двойного клика
                 if event.button == 1:
                     if timer_db_click == 0:
                         timer_db_click = 0.001
@@ -37,6 +40,7 @@ def start():
             elif event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:
                     global_vars.ACTIVE_WINDOW.mouse_up()
+                    # Событие двойного клика
                     if is_db_downed and timer_db_click < 0.5:
                         global_vars.ACTIVE_WINDOW.double_mouse_click()
                         timer_db_click = 0
@@ -54,6 +58,7 @@ def start():
 
         dt = clock.tick(constants.FPS) / 1000
 
+        # Таймер для двойного клика
         if timer_db_click != 0:
             timer_db_click += dt
             if timer_db_click >= 0.5:

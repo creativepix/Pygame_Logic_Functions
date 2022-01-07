@@ -3,6 +3,8 @@ from abc import abstractmethod
 from source_code.py_base import PyObjectBase
 
 
+# Декоратор для определённых методов, при котором метод запусукается
+# только в том случае, если message-окно неактивно
 def disable_if_message(func):
     def cmd(*args):
         if args[0].message_window is None:
@@ -10,6 +12,10 @@ def disable_if_message(func):
     return cmd
 
 
+# Декоратор, использующийся для mouse_down методов, при котором метод
+# запусукается только в том случае, если диалоговое окно неактивно.
+# Здесь также добавляется условие: если тот метод не выполняется, то
+# mouse_down запускается у message-окна
 def mouse_down_check_message(func):
     def cmd(*args):
         if args[0].message_window is None:
