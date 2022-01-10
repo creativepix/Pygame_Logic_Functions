@@ -1,0 +1,8 @@
+AND - И - (a and b)
+NAND - И-НЕ - not(a and b)
+OR - ИЛИ - (a or b)
+NOR - ИЛИ-НЕ - not(a or b)
+NOT - НЕ - not(a)
+XOR - ИСКЛ-ИЛИ - a != b или можно (a or b) and not(a and b)
+XNOR - ИСКЛ-ИЛИ-НЕ - a == b или можно not(a or b) or (a and b)
+XAND и XNAND не существует
