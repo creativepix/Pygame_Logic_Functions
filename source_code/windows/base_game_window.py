@@ -14,16 +14,18 @@ from source_code.block_scheme.connections.input_connection import \
     InputConnection
 from source_code.block_scheme.connections.output_connection import \
     OutputConnection
+from source_code.block_scheme.data.structure_cmds import \
+    get_structure_from_blocks
 from source_code.constants import BLOCK_LIST_WIDTH, BLOCK_MIN_SIZE
 from source_code.errors.block_error import BlockError
 from source_code.global_vars import ACTIVE_SCREEN
 from source_code.windows.base_window import BaseWindow, disable_if_message, \
     mouse_down_check_message
-from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
+from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 # Базовое игровое окно. На нём базируются песочница и сама игра
-class BaseGameWindow(BaseWindow, BaseGameWindowBuilder):
+class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
     def __init__(self, available_blocklists: Iterable):
         from source_code.ui.blocklist.blocklist import BlockList
         super().__init__()
@@ -270,20 +272,18 @@ class BaseGameWindow(BaseWindow, BaseGameWindowBuilder):
 
     def _save(self, table: str, checking_parameter: str,
               value_checking_parameter: Union[int, str],
-              not_in_table_action: Callable[[sqlite3.Cursor, str, str], None])\
+              not_in_table_action: Callable[[sqlite3.Cursor, str, str], None],
+              start_cur: sqlite3.Cursor = None)\
             -> None:
         """сохранение нынешней структуры"""
-        inputs = []
-        structure = []
-        for block in self.all_blocks:
-            if isinstance(block, InputBlock):
-                inputs.append(str(block.outputs[0].signal))
-            structure.append(str(block))
-        structure = '|'.join(structure).strip('|')
+        structure, inputs = get_structure_from_blocks(self.all_blocks)
         inputs = ' '.join(inputs)
 
-        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
-        cur = con.cursor()
+        if start_cur is None:
+            con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
+            cur = con.cursor()
+        else:
+            cur = start_cur
         my_id = cur.execute(f"""
 SELECT ID FROM {table}
 WHERE {checking_parameter} = '{value_checking_parameter}'""").fetchall()
@@ -297,5 +297,6 @@ INPUTS = '{inputs}'
 WHERE ID = {my_id}""")
         else:
             not_in_table_action(cur, structure, inputs)
-        con.commit()
-        con.close()
+        if start_cur is None:
+            con.commit()
+            con.close()

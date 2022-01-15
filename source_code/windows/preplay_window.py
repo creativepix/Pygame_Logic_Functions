@@ -18,7 +18,7 @@ class PreplayWindow(BaseWindow):
         con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
         cur = con.cursor()
         all_levels = cur.execute(
-            f"SELECT ID, NAME, DESCRIPTION, SCORE, MAX_SCORE "
+            f"SELECT ID, NAME, DESCRIPTION, BEST_SCORE, MAX_SCORE "
             f"FROM ALL_LEVELS").fetchall()
 
         names_cells, descriptions_cells, scores_cells, play_btns_cells = \

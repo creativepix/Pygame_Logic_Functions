@@ -3,7 +3,7 @@ import sqlite3
 from abc import abstractmethod
 
 
-class BaseGameWindowBuilder:
+class BuilderBaseGameWindow:
     @abstractmethod
     def update_id_connections(self) -> None:
         pass

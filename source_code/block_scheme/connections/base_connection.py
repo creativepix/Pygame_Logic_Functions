@@ -5,11 +5,11 @@ from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCK_CONNECTION_TRUE_COLOR, \
     BLOCK_CONNECTION_FALSE_COLOR, BLOCKS_INDENT_FOR_RESIZING
-from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
+from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class BaseConnection(BuilderBaseConnection):
-    def __init__(self, base_game_window: BaseGameWindowBuilder,
+    def __init__(self, base_game_window: BuilderBaseGameWindow,
                  parent_block: BuilderBaseBlock,
                  local_coord_percents: Tuple[int, int]):
         super().__init__(base_game_window, parent_block, local_coord_percents)

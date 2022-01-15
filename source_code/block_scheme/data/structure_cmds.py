@@ -1,13 +1,15 @@
 import sqlite3
 from typing import Dict, Tuple, List
 from source_code.errors.block_error import BlockError
+from source_code.block_scheme.blocks.input_block import InputBlock
+from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 
 
-# метод по получению cmd линиипо id-коннектора
 def get_connection_cmd_line(
         input_connection: int, all_connnections: Dict[int, int],
         all_blocks: Dict[Tuple[List[int], List[int]], Tuple[str, str]],
         output_connections: List[int], cur: sqlite3.Cursor = None) -> str:
+    """метод по получению cmd линии по id-коннектора"""
     if cur is None:
         con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
         cur = con.cursor()
@@ -62,9 +64,21 @@ def get_connection_cmd_line(
     return 'False'
 
 
-# получение cmd линии по структурной линии
+def get_structure_from_blocks(all_blocks: List[BuilderBaseBlock])\
+        -> (str, List[bool]):
+    """получение структуры и инпут-сигналов из блоков"""
+    inputs, structure = [], []
+    for block in all_blocks:
+        if isinstance(block, InputBlock):
+            inputs.append(str(block.outputs[0].signal))
+        structure.append(str(block))
+    structure = '|'.join(structure).strip('|')
+    return structure, inputs
+
+
 def get_cmd_line_from_structure(structure_line: str,
                                 cur: sqlite3.Cursor = None) -> str:
+    """получение cmd линии по структурной линии"""
     if not any(structure_line):
         return 'True'
 

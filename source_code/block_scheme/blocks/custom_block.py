@@ -1,5 +1,5 @@
-from typing import Union, List
 import pygame
+from typing import Union, List
 from source_code.block_scheme.blocks.base_block import BaseBlock
 from source_code.block_scheme.connections.input_connection import \
     InputConnection
@@ -7,12 +7,12 @@ from source_code.block_scheme.connections.output_connection import \
     OutputConnection
 from source_code.block_scheme.data.structure_cmds import \
     get_cmd_line_from_structure
-from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
+from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class CustomBlock(BaseBlock):
     def __init__(self, name: str, structure: str,
-                 base_game_window: BaseGameWindowBuilder,
+                 base_game_window: BuilderBaseGameWindow,
                  rect: pygame.rect.Rect,
                  img: Union[str, pygame.Surface] = None):
         ins_len = structure.count('InputBlock')

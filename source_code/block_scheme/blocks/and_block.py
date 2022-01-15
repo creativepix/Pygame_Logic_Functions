@@ -4,11 +4,11 @@ from source_code.block_scheme.connections.input_connection import \
     InputConnection
 from source_code.block_scheme.connections.output_connection import \
     OutputConnection
-from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
+from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class AndBlock(BaseBlock):
-    def __init__(self, base_game_window: BaseGameWindowBuilder,
+    def __init__(self, base_game_window: BuilderBaseGameWindow,
                  rect: pygame.rect.Rect):
         img_path = 'source_code/block_scheme/data/' \
                    'block_imgs/base_blocks/g1061.png'

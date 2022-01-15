@@ -1,14 +1,13 @@
 import pygame
-from . import constants
-from .constants import BACKGROUND_COLOR
-from .windows.main_menu_window import MainMenuWindow
-from . import global_vars
+from source_code import global_vars
+from source_code.windows.main_menu_window import MainMenuWindow
+from source_code.constants import BACKGROUND_COLOR, START_MENU_SIZE, FPS
 
 
 def start():
     pygame.init()
     pygame.display.set_caption('Logic_Functions')
-    screen = pygame.display.set_mode(constants.START_MENU_SIZE,
+    screen = pygame.display.set_mode(START_MENU_SIZE,
                                      pygame.RESIZABLE)
     # Surface активного окна
     global_vars.ACTIVE_SCREEN = screen
@@ -58,7 +57,7 @@ def start():
         if not global_vars.RUNNING:
             break
 
-        dt = clock.tick(constants.FPS) / 1000
+        dt = clock.tick(FPS) / 1000
 
         # Таймер для двойного клика
         if timer_db_click != 0:

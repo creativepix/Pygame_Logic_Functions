@@ -1,11 +1,27 @@
 import pygame
+import sqlite3
 from source_code import global_vars
 from source_code.ui.button import PyButton
-from source_code.constants import START_MENU_SIZE, TEXT_COLOR
+from source_code.constants import START_MENU_SIZE, TEXT_COLOR, \
+    SCORE_FONT_SIZE, BLOCKS_NAME_COLOR, MAIN_MENU_SCORE_RECT
 from source_code.windows.base_window import BaseWindow
 
 
 class MainMenuWindow(BaseWindow):
+    def __init__(self):
+        super().__init__()
+        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
+        cur = con.cursor()
+        sum_score = sum([score[0] for score in
+                         cur.execute(f"SELECT BEST_SCORE FROM ALL_LEVELS").
+                         fetchall()])
+        max_score = sum([score[0] for score in
+                         cur.execute(f"SELECT MAX_SCORE FROM ALL_LEVELS").
+                         fetchall()])
+        self.sum_score = sum_score
+        self.max_score = max_score
+        con.close()
+
     def tick(self, screen: pygame.Surface) -> None:
         screen.fill((0, 0, 0))
         text_w, text_h = 200, 70
@@ -46,3 +62,8 @@ class MainMenuWindow(BaseWindow):
 
         for btn in self.all_btns:
             btn.render(screen)
+
+        font = pygame.font.Font(None, SCORE_FONT_SIZE)
+        widget = font.render(f'Sum score: {self.sum_score} / {self.max_score}',
+                             True, BLOCKS_NAME_COLOR)
+        screen.blit(widget, pygame.Rect(MAIN_MENU_SCORE_RECT))

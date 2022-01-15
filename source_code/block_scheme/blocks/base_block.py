@@ -5,11 +5,11 @@ from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCKS_COLOR, BLOCKS_NAME_COLOR, \
     BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE
-from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
+from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class BaseBlock(BuilderBaseBlock):
-    def __init__(self, base_game_window: BaseGameWindowBuilder,
+    def __init__(self, base_game_window: BuilderBaseGameWindow,
                  name: str, rect: pygame.rect.Rect,
                  signal_action: Callable[
                      [List[bool]], List[bool]],
@@ -120,7 +120,8 @@ class BaseBlock(BuilderBaseBlock):
 
     def delete(self) -> None:
         for connection in self.inputs + self.outputs:
-            for attached_connection in connection.attached_connections:
+            while len(connection.attached_connections) > 0:
+                attached_connection = connection.attached_connections[-1]
                 connection.detach(attached_connection)
         del self.base_game_window.all_blocks[
             self.base_game_window.all_blocks.index(self)]

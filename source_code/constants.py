@@ -3,16 +3,31 @@ import pygame
 FPS = 120
 START_MENU_SIZE = 1200, 700
 BACKGROUND_COLOR = (0, 0, 0)
-# Menu
+# Menu window
 TEXT_COLOR = pygame.Color("seagreen")
-# Presandbox
+MAIN_MENU_SCORE_RECT = (10, 10, 100, 100)
+# Presandbox window
 PRESANDBOX_TEXT_WIDTH = 10
-# Preplay
+# Preplay window
 PREPLAY_LEVEL_HEIGHT = 35
-# Sandbox
+# Sandbox window
 SAVE_BTN_RECT = pygame.Rect(10, 10, 150, 35)
 SAVE_PIC_BTN_RECT = pygame.Rect(10, 90, 150, 35)
+CHECK_SOLUTION_BTN_RECT = pygame.Rect(10, 90, 150, 35)
 BACK_BTN_RECT = pygame.Rect(10, 50, 150, 35)
+# Score/Results
+RESULT_TITLES_INDENT = 15
+RESULTS_FONT_SIZE = 15
+SCORE_FONT_SIZE = 25
+SCORE_GAME_RECT = pygame.Rect(10, 620, 100, 50)
+BEST_GAME_SCORE_RECT = pygame.Rect(10, 650, 100, 50)
+# Play window
+INPUTS_RESULT_TABLE_RECT = pygame.Rect(
+    10, 140 + RESULT_TITLES_INDENT, 50, 450)
+NEEDED_OUTPUTS_RESULT_TABLE_RECT = pygame.Rect(
+    60, 140 + RESULT_TITLES_INDENT, 50, 450)
+OUTPUTS_RESULT_TABLE_RECT = pygame.Rect(
+    110, 140 + RESULT_TITLES_INDENT, 50, 450)
 # Blocks
 MAX_LEN_BLOCK_NAME = 10
 BLOCKS_COLOR = (120, 120, 120)
