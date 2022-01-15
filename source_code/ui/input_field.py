@@ -1,8 +1,6 @@
+import pygame
 import string
 from typing import Callable
-
-import pygame
-
 from source_code.py_base import PyObjectBase
 
 

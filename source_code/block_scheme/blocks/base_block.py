@@ -1,16 +1,15 @@
-from typing import List, Union, Callable
 import pygame
+from typing import List, Union, Callable
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
-from source_code.block_scheme.connections.base_connection import BaseConnection
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCKS_COLOR, BLOCKS_NAME_COLOR, \
     BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE
-from source_code.windows.base_game_window import BaseGameWindow
+from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
 
 
 class BaseBlock(BuilderBaseBlock):
-    def __init__(self, base_game_window: BaseGameWindow,
+    def __init__(self, base_game_window: BaseGameWindowBuilder,
                  name: str, rect: pygame.rect.Rect,
                  signal_action: Callable[
                      [List[bool]], List[bool]],

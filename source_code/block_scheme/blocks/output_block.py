@@ -2,11 +2,11 @@ import pygame
 from source_code.block_scheme.blocks.base_block import BaseBlock
 from source_code.block_scheme.connections.input_connection import \
     InputConnection
-from source_code.windows.base_game_window import BaseGameWindow
+from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
 
 
 class OutputBlock(BaseBlock):
-    def __init__(self, base_game_window: BaseGameWindow,
+    def __init__(self, base_game_window: BaseGameWindowBuilder,
                  rect: pygame.rect.Rect):
         super().__init__(
             base_game_window, 'output', rect, lambda inputs: [],

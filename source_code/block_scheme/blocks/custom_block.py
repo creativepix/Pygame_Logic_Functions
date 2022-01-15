@@ -1,21 +1,19 @@
 from typing import Union, List
-
 import pygame
 from source_code.block_scheme.blocks.base_block import BaseBlock
-from source_code.block_scheme.connections.builder_base_connection import \
-    BuilderBaseConnection
 from source_code.block_scheme.connections.input_connection import \
     InputConnection
 from source_code.block_scheme.connections.output_connection import \
     OutputConnection
 from source_code.block_scheme.data.structure_cmds import \
     get_cmd_line_from_structure
-from source_code.windows.base_game_window import BaseGameWindow
+from source_code.windows.builder_base_game_window import BaseGameWindowBuilder
 
 
 class CustomBlock(BaseBlock):
     def __init__(self, name: str, structure: str,
-                 base_game_window: BaseGameWindow, rect: pygame.rect.Rect,
+                 base_game_window: BaseGameWindowBuilder,
+                 rect: pygame.rect.Rect,
                  img: Union[str, pygame.Surface] = None):
         ins_len = structure.count('InputBlock')
         outs_len = structure.count('OutputBlock')

@@ -1,16 +1,7 @@
-import sqlite3
-
 import pygame
 from typing import Callable
-from source_code import global_vars
-from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
-from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
-from source_code.ui.input_field import PyInputField
-from source_code.ui.list.cell_in_list import CellInList
-from source_code.ui.table import PyTable
 from source_code.windows.base_game_window import BaseGameWindow
-from source_code.windows.base_window import BaseWindow
 
 
 def make_copy_block(cell_block: CellInBlockList,

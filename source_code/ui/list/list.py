@@ -1,7 +1,6 @@
 import pygame
-from typing import Iterable, Tuple, Union, List
+from typing import Tuple, Union, List
 from source_code.py_base import PyObjectBase
-from source_code.constants import BLOCK_LIST_WIDTH
 from source_code.ui.list.cell_in_list import CellInList
 
 
@@ -23,6 +22,9 @@ class PyList(PyObjectBase):
         self.orientation = orientation
         self.rect: pygame.Rect = rect
 
+    def scroll(self, koof: int) -> None:
+        self.local_var -= koof * 10
+
     def mouse_down(self) -> None:
         for cell in self.cells:
             if cell.rect.collidepoint(pygame.mouse.get_pos()):
@@ -30,7 +32,7 @@ class PyList(PyObjectBase):
 
     def mouse_wheel(self, koof: int) -> None:
         if self.rect.collidepoint(pygame.mouse.get_pos()):
-            self.local_var -= koof * 10
+            self.scroll(koof)
 
     def render(self, screen: pygame.Surface) -> None:
         surf = pygame.Surface(self.rect.size, pygame.SRCALPHA)

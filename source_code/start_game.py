@@ -21,7 +21,7 @@ def start():
     clock = pygame.time.Clock()
     while global_vars.RUNNING:
         screen.fill(BACKGROUND_COLOR)
-        # Перерисовка окна?
+        # Перерисовка окна
         global_vars.ACTIVE_WINDOW.tick(global_vars.ACTIVE_SCREEN)
         if not global_vars.RUNNING:
             break
@@ -53,6 +53,8 @@ def start():
                 global_vars.ACTIVE_WINDOW.key_down(event.key)
             elif event.type == pygame.TEXTINPUT:
                 global_vars.ACTIVE_WINDOW.text_input(event.text)
+            elif event.type == pygame.DROPFILE:
+                global_vars.ACTIVE_WINDOW.file_drop(event.file)
         if not global_vars.RUNNING:
             break
 

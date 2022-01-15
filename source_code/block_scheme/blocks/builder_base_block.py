@@ -1,13 +1,12 @@
-from abc import abstractmethod
-from typing import List
 import pygame
+from abc import abstractmethod
 from source_code.py_base import PyObjectBase
-from source_code.windows.base_game_window import BaseGameWindow
 
 
-class BuilderBaseBlock(PyObjectBase):
-    def __init__(self, base_game_window, name, rect, signal_action,
-                 inputs, outputs, img):
+class BuilderBaseBlock(PyObjectBase, pygame.sprite.Sprite):
+    def __init__(self, base_game_window, name, rect, signal_action, inputs,
+                 outputs, img):
+        super().__init__()
         self.base_game_window = base_game_window
         self.name = name
         self.rect = rect

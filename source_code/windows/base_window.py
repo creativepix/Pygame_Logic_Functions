@@ -30,7 +30,11 @@ class BaseWindow(PyObjectBase):
     def __init__(self):
         self.all_btns = []
         self.all_inp_fields = []
+        self.all_blocks = []
         self.message_window = None
+
+    def file_drop(self, file_path: str) -> None:
+        self.message_window.file_drop(file_path)
 
     @abstractmethod
     def tick(self, screen: pygame.Surface) -> None:

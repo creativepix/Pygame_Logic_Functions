@@ -1,8 +1,6 @@
 import math
-from typing import Union, Tuple, Iterable, List
-
 import pygame
-
+from typing import List
 from source_code.errors.table_error import TableError
 from source_code.py_base import PyObjectBase
 from source_code.ui.list.list import PyList
@@ -38,7 +36,7 @@ class PyTable(PyObjectBase):
 
     def mouse_wheel(self, koof: int) -> None:
         for pylist in self.pylists:
-            pylist.mouse_wheel(koof)
+            pylist.scroll(koof)
 
     def render(self, screen: pygame.Surface) -> None:
         for pylist in self.pylists:

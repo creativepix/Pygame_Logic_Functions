@@ -1,7 +1,7 @@
 import pygame
 from source_code import global_vars
-from source_code.constants import START_MENU_SIZE, TEXT_COLOR
 from source_code.ui.button import PyButton
+from source_code.constants import START_MENU_SIZE, TEXT_COLOR
 from source_code.windows.base_window import BaseWindow
 
 
@@ -12,7 +12,8 @@ class MainMenuWindow(BaseWindow):
         otstyp = 100
 
         def start_game_action():
-            pass
+            from source_code.windows.preplay_window import PreplayWindow
+            global_vars.ACTIVE_WINDOW = PreplayWindow()
 
         def start_sandbox_action():
             from source_code.windows.presandbox_window import PresandboxWindow

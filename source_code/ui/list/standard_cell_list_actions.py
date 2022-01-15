@@ -1,15 +1,13 @@
+import pygame
 import sqlite3
 from typing import Callable
-
-import pygame
-
 from source_code import global_vars
-from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME
-from source_code.ui.input_field import PyInputField
-from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.table import PyTable
+from source_code.ui.input_field import PyInputField
 from source_code.windows.base_window import BaseWindow
+from source_code.ui.list.cell_in_list import CellInList
 from source_code.windows.sandbox_window import SandboxWindow
+from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME
 
 
 def open_entering_custom_block_name(

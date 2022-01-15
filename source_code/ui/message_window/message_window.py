@@ -1,5 +1,4 @@
 import pygame
-
 from source_code import global_vars
 from source_code.constants import TEXT_COLOR
 from source_code.py_base import PyObjectBase

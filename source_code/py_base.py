@@ -3,6 +3,9 @@ import pygame
 
 # Класс для всего на экране
 class PyObjectBase(object):
+    def file_drop(self, *args) -> None:
+        pass
+
     def text_input(self, *args) -> None:
         pass
 

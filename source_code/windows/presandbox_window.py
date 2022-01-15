@@ -1,15 +1,8 @@
 import sqlite3
-
 import pygame
-
-from source_code import global_vars
-from source_code.block_scheme.blocks.and_block import AndBlock
-from source_code.block_scheme.blocks.custom_block import CustomBlock
-from source_code.constants import BLOCK_MIN_SIZE, BLOCK_LIST_WIDTH, TEXT_COLOR, \
+from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, \
     TABLE_X_SYMBOL_SIZE
 from source_code.global_vars import ACTIVE_SCREEN
-from source_code.ui.blocklist.blocklist import BlockList
-from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
 from source_code.ui.list.standard_cell_list_actions import \
@@ -38,10 +31,10 @@ class PresandboxWindow(BaseWindow):
                 img=custom_block[2])
             cells_in_list.append(cell_in_list)
 
-            cell_in_list = CellInList('x', lambda: None, TABLE_X_SYMBOL_SIZE)
+            cell_in_list = CellInList('x', size=TABLE_X_SYMBOL_SIZE)
             del_cells_in_list.append(cell_in_list)
 
-        adding_cell_in_block_list = CellInList('+', lambda: None)
+        adding_cell_in_block_list = CellInList('+')
         adding_cell_in_block_list.action = open_entering_custom_block_name(
             self, adding_cell_in_block_list)
         cells_in_list.append(adding_cell_in_block_list)

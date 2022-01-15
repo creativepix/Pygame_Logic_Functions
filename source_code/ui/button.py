@@ -1,9 +1,7 @@
-from typing import Callable
-
 import pygame
-
-from source_code.constants import BLOCKS_WIDTH, BUTTON_RECT_COLOR
+from typing import Callable
 from source_code.py_base import PyObjectBase
+from source_code.constants import BLOCKS_WIDTH, BUTTON_RECT_COLOR
 
 
 # Такие классы хранятся в BaseWindow`ах в списке all_bts

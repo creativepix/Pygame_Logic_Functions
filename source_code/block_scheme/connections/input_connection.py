@@ -1,4 +1,3 @@
-from typing import Tuple
 from source_code.block_scheme.connections.base_connection import BaseConnection
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection

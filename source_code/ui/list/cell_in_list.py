@@ -1,16 +1,14 @@
 from typing import Callable, Union, Tuple
 
 import pygame
-from source_code.block_scheme.blocks.base_block import BaseBlock
 from source_code.constants import BLOCKS_WIDTH, BLOCKS_NAME_COLOR, \
-    BLOCK_MIN_SIZE, BLOCKS_COLOR, SPACE_BLOCKS_IN_BLOCK_LIST, BACKGROUND_COLOR, \
-    BASE_CELL_IN_BLOCK_SIZE
+    BLOCKS_COLOR, SPACE_BLOCKS_IN_BLOCK_LIST, BASE_CELL_IN_BLOCK_SIZE
 
 
 class CellInList:
     """Ячейка в списке"""
     def __init__(self, text: Union[str, Callable[[], str]],
-                 action: Callable, size: Tuple[int, int] = None,
+                 action: Callable = lambda: None, size: Tuple[int, int] = None,
                  img: Union[pygame.Surface, str] = None):
         if size is not None:
             self.size = size

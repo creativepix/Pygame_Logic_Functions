@@ -7,10 +7,12 @@ BACKGROUND_COLOR = (0, 0, 0)
 TEXT_COLOR = pygame.Color("seagreen")
 # Presandbox
 PRESANDBOX_TEXT_WIDTH = 10
+# Preplay
+PREPLAY_LEVEL_HEIGHT = 35
 # Sandbox
-SAVE_BTN_RECT = pygame.Rect(10, 10, 100, 35)
-LOAD_IMG_RECT = pygame.Rect(10, 50, 100, 35)
-BACK_BTN_RECT = pygame.Rect(10, 90, 100, 35)
+SAVE_BTN_RECT = pygame.Rect(10, 10, 150, 35)
+SAVE_PIC_BTN_RECT = pygame.Rect(10, 90, 150, 35)
+BACK_BTN_RECT = pygame.Rect(10, 50, 150, 35)
 # Blocks
 MAX_LEN_BLOCK_NAME = 10
 BLOCKS_COLOR = (120, 120, 120)
