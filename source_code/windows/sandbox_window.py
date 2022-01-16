@@ -9,6 +9,7 @@ from source_code.block_scheme.blocks.or_block import OrBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, SAVE_PIC_BTN_RECT
+from source_code.middlewares.window_transition_actions import to_main_menu
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
     make_copy_block
@@ -67,10 +68,6 @@ class SandboxWindow(BaseGameWindow):
                     dropped_action)
             self.message_window = DropFileWindow(*args)
 
-        def back_action():
-            from source_code.windows.main_menu_window import MainMenuWindow
-            global_vars.ACTIVE_WINDOW = MainMenuWindow()
-
         def save_action():
             self.update_id_connections()
             try:
@@ -91,7 +88,7 @@ class SandboxWindow(BaseGameWindow):
                                      action=save_pic_action)
         self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
-                                 action=back_action)
+                                 action=to_main_menu)
 
         self.all_btns = [self.save_btn, self.back_btn, self.save_pic_btn]
 

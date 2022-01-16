@@ -1,8 +1,10 @@
-import sqlite3
 import pygame
+import sqlite3
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, \
-    TABLE_X_SYMBOL_SIZE
+    TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT
 from source_code.global_vars import ACTIVE_SCREEN
+from source_code.middlewares.window_transition_actions import to_main_menu
+from source_code.ui.button import PyButton
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
 from source_code.ui.list.standard_cell_list_actions import \
@@ -51,9 +53,15 @@ class PresandboxWindow(BaseWindow):
             del_cell_in_list.action = delete_custom_block_row(
                 del_cell_in_list, self.choose_edit_block_table, 0)
 
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+                                 color=TEXT_COLOR, rect=BACK_BTN_RECT,
+                                 action=to_main_menu)
+        self.all_btns.append(self.back_btn)
+
         con.close()
 
     def tick(self, screen: pygame.Surface) -> None:
+        super().tick(screen)
         self.choose_edit_block_table.render(screen)
         font = pygame.font.Font(None, 75)
         for i, line in enumerate(['Выберите блок',
@@ -70,5 +78,6 @@ class PresandboxWindow(BaseWindow):
 
     @disable_if_message
     def mouse_down(self, mouse_button: int) -> None:
+        super().mouse_down(mouse_button)
         if mouse_button == 1:
             self.choose_edit_block_table.mouse_down()

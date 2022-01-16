@@ -1,7 +1,7 @@
 import json
 import pygame
 import sqlite3
-from typing import Dict
+from typing import Dict, Tuple, Union, List
 from source_code import global_vars
 from source_code.block_scheme.blocks.and_block import AndBlock
 from source_code.block_scheme.blocks.custom_block import CustomBlock
@@ -16,6 +16,7 @@ from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
     NEEDED_OUTPUTS_RESULT_TABLE_RECT, OUTPUTS_RESULT_TABLE_RECT, \
     RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, BLOCKS_NAME_COLOR, \
     SCORE_GAME_RECT, BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE
+from source_code.middlewares.window_transition_actions import to_main_menu
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
     make_copy_block
@@ -78,44 +79,16 @@ class PlayWindow(BaseGameWindow):
 
         super().__init__(all_listblocks)
 
-        def check_solution_action():
-            self.update_id_connections()
-            structure, inputs = \
-                get_structure_from_blocks(self.all_blocks)
-            cmd_line = get_cmd_line_from_structure(structure)
-            all_ans = dict()
-            for inputs, outputs in self.accordance.items():
-                now_cmd_line = cmd_line
-                for i in range(len(inputs)):
-                    now_cmd_line = now_cmd_line.replace(
-                        f'input_blocks[{i}]', inputs[i])
-                ans = [eval(line) for line in now_cmd_line.split('\n')]
-                all_ans[inputs] = (list(map(str, outputs)),
-                                   list(map(lambda x: str(int(x)), ans)))
-            self.make_table_results(all_ans)
-            score = len([ans for ans in all_ans.values() if ans[0] == ans[1]])
-            score_value = int(self.max_score * score // len(self.accordance))
-            if score_value == self.max_score and len(self.accordance) != score:
-                score_value -= 1
-            self.last_score = score_value
-            if score_value >= self.best_score:
-                self.best_score = score_value
-                self.save_action()
-
-        def back_action():
-            from source_code.windows.main_menu_window import MainMenuWindow
-            global_vars.ACTIVE_WINDOW = MainMenuWindow()
-
         self.save_btn = PyButton(text='Save', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=SAVE_BTN_RECT,
                                  action=self.save_action)
         self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
-                                 action=back_action)
+                                 action=to_main_menu)
         self.check_btn = PyButton(text='Check', color=TEXT_COLOR,
                                   font=pygame.font.Font(None, 25),
                                   rect=CHECK_SOLUTION_BTN_RECT,
-                                  action=check_solution_action)
+                                  action=self.check_solution_action)
 
         self.all_btns = [self.save_btn, self.back_btn, self.check_btn]
 
@@ -142,6 +115,40 @@ class PlayWindow(BaseGameWindow):
             {key: (list(map(str, value)), ['None'])
              for key, value in self.accordance.items()})
 
+    def get_score_from_test_answers(
+            self, all_ans: Dict[Tuple[Union[str]],
+                                Tuple[List[str], List[str]]]) -> int:
+        score = len([ans for ans in all_ans.values() if ans[0] == ans[1]])
+        score_value = int(self.max_score * score // len(self.accordance))
+        if score_value == self.max_score and len(self.accordance) != score:
+            score_value -= 1
+        return score_value
+
+    def get_all_test_answers(self) -> \
+            Dict[Tuple[Union[str]], Tuple[List[str], List[str]]]:
+        self.update_id_connections()
+        structure, inputs = \
+            get_structure_from_blocks(self.all_blocks)
+        cmd_line = get_cmd_line_from_structure(structure)
+        all_ans = dict()
+        for inputs, outputs in self.accordance.items():
+            now_cmd_line = cmd_line
+            for i in range(len(inputs)):
+                now_cmd_line = now_cmd_line.replace(
+                    f'input_blocks[{i}]', inputs[i])
+            ans = [eval(line) for line in now_cmd_line.split('\n')]
+            all_ans[inputs] = (list(map(str, outputs)),
+                               list(map(lambda x: str(int(x)), ans)))
+        return all_ans
+
+    def check_solution_action(self):
+        all_ans = self.get_all_test_answers()
+        score_value = self.get_score_from_test_answers(all_ans)
+        self.make_table_results(all_ans)
+        self.last_score = score_value
+        if score_value >= self.best_score:
+            self.best_score = score_value
+
     def save_action(self):
         self.update_id_connections()
         try:
@@ -154,18 +161,18 @@ class PlayWindow(BaseGameWindow):
         self.message_window = MessageWindow(txt, message_rect)
 
     def make_table_results(self, results: Dict):
+        font = pygame.font.Font(None, RESULTS_FONT_SIZE)
+        cell_size = (50, 25)
+
         # идёт распределение на правильные/неправильные для того, чтобы
         # в таблицу результатов сначала вывести плохие результаты
-        font = pygame.font.Font(None, RESULTS_FONT_SIZE)
-
         wrong_results = {key: value for key, value in results.items()
                          if value[0] != value[1]}
         correct_results = {key: value for key, value in results.items()
                            if value[0] == value[1]}
         inputs_lists, needed_outputs_lists, outputs_lists = [], [], []
-        for dicti_results in (wrong_results, correct_results):
+        for i, dicti_results in enumerate([wrong_results, correct_results]):
             for inputs, (needed_outputs, outputs) in dicti_results.items():
-                cell_size = (50, 25)
                 inputs_lists.append(
                     CellInList(''.join(inputs), size=cell_size,
                                font=font))
@@ -173,8 +180,8 @@ class PlayWindow(BaseGameWindow):
                     CellInList(''.join(needed_outputs), size=cell_size,
                                font=font))
                 outputs_lists.append(
-                    CellInList(''.join(outputs), size=cell_size,
-                               font=font))
+                    CellInList(('+ ' if i == 1 else '- ') + ''.join(outputs),
+                               size=cell_size, font=font))
 
         result_lists = [PyList(inputs_lists, INPUTS_RESULT_TABLE_RECT, 0),
                         PyList(needed_outputs_lists,

@@ -1,5 +1,4 @@
 import pygame
-from abc import abstractmethod
 from source_code.py_base import PyObjectBase
 
 
@@ -36,9 +35,16 @@ class BaseWindow(PyObjectBase):
     def file_drop(self, file_path: str) -> None:
         self.message_window.file_drop(file_path)
 
-    @abstractmethod
     def tick(self, screen: pygame.Surface) -> None:
-        pass
+        screen.fill((0, 0, 0))
+
+        for block in self.all_blocks:
+            block.render(screen)
+        for btn in self.all_btns:
+            btn.render(screen)
+
+        if self.message_window is not None:
+            self.message_window.render(screen)
 
     @disable_if_message
     def key_down(self, key: int) -> None:

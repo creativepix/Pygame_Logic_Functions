@@ -7,8 +7,8 @@ from source_code.constants import BACKGROUND_COLOR, START_MENU_SIZE, FPS
 def start():
     pygame.init()
     pygame.display.set_caption('Logic_Functions')
-    screen = pygame.display.set_mode(START_MENU_SIZE,
-                                     pygame.RESIZABLE)
+    screen = pygame.display.set_mode(START_MENU_SIZE)
+#                                     pygame.RESIZABLE)
     # Surface активного окна
     global_vars.ACTIVE_SCREEN = screen
     # Активное окно

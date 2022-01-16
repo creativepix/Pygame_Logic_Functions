@@ -1,12 +1,14 @@
 import pygame
 import sqlite3
 from source_code import global_vars
+from source_code.ui.button import PyButton
 from source_code.ui.table import PyTable
 from source_code.ui.list.list import PyList
 from source_code.global_vars import ACTIVE_SCREEN
 from source_code.windows.play_window import PlayWindow
 from source_code.ui.list.cell_in_list import CellInList
-from source_code.constants import TEXT_COLOR, PREPLAY_LEVEL_HEIGHT
+from source_code.constants import TEXT_COLOR, PREPLAY_LEVEL_HEIGHT, \
+    BACK_BTN_RECT
 from source_code.windows.base_window import BaseWindow, disable_if_message
 
 
@@ -19,7 +21,7 @@ class PreplayWindow(BaseWindow):
         cur = con.cursor()
         all_levels = cur.execute(
             f"SELECT ID, NAME, DESCRIPTION, BEST_SCORE, MAX_SCORE "
-            f"FROM ALL_LEVELS").fetchall()
+            f"FROM ALL_LEVELS WHERE ID > 0").fetchall()
 
         names_cells, descriptions_cells, scores_cells, play_btns_cells = \
             [], [], [], []
@@ -53,9 +55,19 @@ class PreplayWindow(BaseWindow):
         self.choose_level_table = PyTable(
             [names, descriptions, scores, play_btns])
 
+        def back_action():
+            from source_code.windows.main_menu_window import MainMenuWindow
+            global_vars.ACTIVE_WINDOW = MainMenuWindow()
+
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+                                 color=TEXT_COLOR, rect=BACK_BTN_RECT,
+                                 action=back_action)
+        self.all_btns.append(self.back_btn)
+
         con.close()
 
     def tick(self, screen: pygame.Surface) -> None:
+        super().tick(screen)
         self.choose_level_table.render(screen)
         font = pygame.font.Font(None, 75)
         for i, line in enumerate(['Выберите уровень',
@@ -72,5 +84,6 @@ class PreplayWindow(BaseWindow):
 
     @disable_if_message
     def mouse_down(self, mouse_button: int) -> None:
+        super().mouse_down(mouse_button)
         if mouse_button == 1:
             self.choose_level_table.mouse_down()

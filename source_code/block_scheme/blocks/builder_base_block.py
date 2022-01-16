@@ -1,6 +1,7 @@
 import pygame
 from abc import abstractmethod
 from source_code.py_base import PyObjectBase
+from source_code.middlewares.load_image import load_image
 
 
 class BuilderBaseBlock(PyObjectBase, pygame.sprite.Sprite):
@@ -15,7 +16,7 @@ class BuilderBaseBlock(PyObjectBase, pygame.sprite.Sprite):
         self.outputs = outputs
         if isinstance(img, str):
             if any(img):
-                self.img = pygame.image.load(img)
+                self.img = load_image(img)
             else:
                 self.img = None
         else:
