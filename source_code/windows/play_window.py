@@ -97,15 +97,15 @@ class PlayWindow(BaseGameWindow):
         loading = level[1]
         if loading is None or not any(loading):
             loading = []
-            rect = pygame.Rect(
-                *STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, *BLOCK_MIN_SIZE)
+            rect = pygame.Rect(STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[0],
+                               STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[1]
+                               + BLOCK_MIN_SIZE[1] * 2, *BLOCK_MIN_SIZE)
             for _ in range(self.input_count):
                 loading.append(f'InputBlock(input,{rect},OutputConnection('
                                f'0,[],(50, 0)))')
                 rect.x += BLOCK_MIN_SIZE[0]
-            rect = pygame.Rect(STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[0],
-                               STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[1]
-                               + BLOCK_MIN_SIZE[1] * 2, *BLOCK_MIN_SIZE)
+            rect = pygame.Rect(
+                *STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, *BLOCK_MIN_SIZE)
             for _ in range(self.output_count):
                 loading.append(f'OutputBlock(output,{rect},InputConnection('
                                f'1,[],(50, 100)))')
