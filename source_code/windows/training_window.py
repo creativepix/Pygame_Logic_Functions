@@ -10,7 +10,7 @@ from source_code.constants import TRAINING_INSTRUCTIONS, \
     TRAININ_TEXT_LINES_INDENT, TRAINING_ARROW_SIZE, SCORE_GAME_RECT, \
     TRAINING_TEXT_COLOR, BACKGROUND_COLOR
 from source_code.middlewares.splitting_line import split_line
-from source_code.middlewares.window_transition_actions import to_main_menu
+from source_code.middlewares.window_transition_actions import to_main_menu_action
 from source_code.ui.message_window.message_window import MessageWindow
 from source_code.ui.training_arrow import TrainingArrow
 from source_code.windows.play_window import PlayWindow
@@ -29,10 +29,7 @@ class TrainingWindow(PlayWindow):
             self.stage += 1
 
     def save_action(self):
-        txt = 'You cannot save training level'
-        message_rect = pygame.Rect(
-            0, 0, *global_vars.ACTIVE_SCREEN.get_size())
-        self.message_window = MessageWindow(txt, message_rect)
+        self.show_message('You cannot save training level')
 
     def mouse_wheel(self, koof: int) -> None:
         if koof > 0 and self.stage == 6:
@@ -47,7 +44,7 @@ class TrainingWindow(PlayWindow):
                 [0, 1, 2, 3, 4, 9, 11, 15, 16, 17]:
             self.stage += 1
             if self.stage == 18:
-                to_main_menu()
+                to_main_menu_action()
             super().mouse_down(mouse_button)
         elif mouse_button == 3 and self.stage == 12:
             super().mouse_down(mouse_button)
