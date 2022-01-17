@@ -12,13 +12,12 @@ from source_code.block_scheme.data.structure_cmds import \
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, SAVE_PIC_BTN_RECT
 from source_code.errors.no_output_block_error import NoOutputBlockError
-from source_code.middlewares.window_transition_actions import to_main_menu
+from source_code.middlewares.window_transition_actions import to_main_menu_action
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
     make_copy_block
 from source_code.ui.button import PyButton
 from source_code.ui.message_window.drop_file_window import DropFileWindow
-from source_code.ui.message_window.message_window import MessageWindow
 from source_code.windows.base_game_window import BaseGameWindow
 
 
@@ -84,7 +83,7 @@ class SandboxWindow(BaseGameWindow):
                                      action=save_pic_action)
         self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
-                                 action=to_main_menu)
+                                 action=to_main_menu_action)
 
         self.all_btns = [self.save_btn, self.back_btn, self.save_pic_btn]
 

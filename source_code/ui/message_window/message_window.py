@@ -29,4 +29,4 @@ class MessageWindow(PyObjectBase):
 
     def mouse_down(self) -> None:
         if self.is_rendered and self.rect.collidepoint(pygame.mouse.get_pos()):
-            global_vars.ACTIVE_WINDOW.message_window = None
+            global_vars.ACTIVE_WINDOW.hide_message()

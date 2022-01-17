@@ -1,6 +1,8 @@
 import pygame
+from source_code import global_vars
 from source_code.py_base import PyObjectBase
 from source_code.constants import BACKGROUND_COLOR
+from source_code.ui.message_window.message_window import MessageWindow
 
 
 # Декоратор для определённых методов, при котором метод запусукается
@@ -30,6 +32,16 @@ class BaseWindow(PyObjectBase):
     def __init__(self):
         self.all_btns = []
         self.all_inp_fields = []
+        self.message_window = None
+
+    def show_message(self, text: str) -> None:
+        message_rect = pygame.Rect(
+            0, 0, *global_vars.ACTIVE_SCREEN.get_size())
+        self.message_window = MessageWindow(text, message_rect)
+        self.message_window.render(global_vars.ACTIVE_SCREEN)
+        pygame.display.flip()
+
+    def hide_message(self) -> None:
         self.message_window = None
 
     def file_drop(self, file_path: str) -> None:

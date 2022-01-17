@@ -1,6 +1,7 @@
 import pygame
 import sqlite3
 from source_code import global_vars
+from source_code.middlewares.splitting_line import split_line
 from source_code.ui.button import PyButton
 from source_code.ui.table import PyTable
 from source_code.ui.list.list import PyList
@@ -8,7 +9,7 @@ from source_code.global_vars import ACTIVE_SCREEN
 from source_code.windows.play_window import PlayWindow
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.constants import TEXT_COLOR, PREPLAY_LEVEL_HEIGHT, \
-    BACK_BTN_RECT
+    BACK_BTN_RECT, PREPLAY_MAX_SYMBOLS_DESCRIPTION
 from source_code.windows.base_window import BaseWindow, disable_if_message
 
 
@@ -31,20 +32,22 @@ class PreplayWindow(BaseWindow):
                     global_vars.ACTIVE_WINDOW = PlayWindow(level_id)
                 return cmd
             names_cells.append(CellInList(
-                level[1], size=(150, PREPLAY_LEVEL_HEIGHT)))
+                level[1], size=(215, PREPLAY_LEVEL_HEIGHT)))
             descriptions_cells.append(CellInList(
-                level[2], size=(750, PREPLAY_LEVEL_HEIGHT)))
+                '\n'.join(
+                    split_line(level[2], PREPLAY_MAX_SYMBOLS_DESCRIPTION)),
+                size=(775, PREPLAY_LEVEL_HEIGHT)))
             scores_cells.append(CellInList(
                 f'{level[3]}/{level[4]}', size=(75, PREPLAY_LEVEL_HEIGHT)))
             play_btns_cells.append(CellInList(
                 f'Play', load_level(level[0]),
                 size=(75, PREPLAY_LEVEL_HEIGHT)))
 
-        rect = pygame.Rect(75, 150,
-                           150, ACTIVE_SCREEN.get_height() - 150)
+        rect = pygame.Rect(10, 150,
+                           215, ACTIVE_SCREEN.get_height() - 150)
         names = PyList(names_cells, rect, 0, (0, 0, 0, 0))
         rect = pygame.Rect(rect.x + rect.w, 150,
-                           750, ACTIVE_SCREEN.get_height() - 150)
+                           775, ACTIVE_SCREEN.get_height() - 150)
         descriptions = PyList(descriptions_cells, rect, 0, (0, 0, 0, 0))
         rect = pygame.Rect(rect.x + rect.w, 150,
                            75, ACTIVE_SCREEN.get_height() - 150)

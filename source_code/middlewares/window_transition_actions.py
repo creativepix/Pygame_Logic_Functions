@@ -2,7 +2,7 @@ import pygame
 from source_code import global_vars
 
 
-def to_main_menu():
+def to_main_menu_action():
     from source_code.windows.main_menu_window import MainMenuWindow
     global_vars.ACTIVE_WINDOW = MainMenuWindow()
 

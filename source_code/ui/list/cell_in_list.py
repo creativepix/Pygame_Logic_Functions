@@ -30,23 +30,8 @@ class CellInList:
     def do_action(self):
         self.action()
 
-    def render(self, screen: pygame.Surface, block_list_rect: pygame.Rect,
-               koof: int, block_list_local_var: int, orientation: int) -> None:
-        """orientation - 0 = vertical, 1 = horizontal"""
-        cropping = pygame.Rect(0, 0, self.rect.w, self.rect.h)
-        surf = pygame.Surface(self.rect.size)
-        if self.img is None:
-            widget = self.font.render(
-                self.text if isinstance(self.text, str) else
-                self.text(), True, self.text_color)
-            font_rect = widget.get_rect()
-            font_rect.center = (self.rect.w // 2, self.rect.h // 2)
-            surf.blit(widget, font_rect)
-            pygame.draw.rect(
-                surf, LIST_CELLS_COLOR, (0, 0, self.rect.w, self.rect.h),
-                width=BLOCKS_WIDTH)
-        else:
-            surf = self.img
+    def update_rect(self, block_list_rect: pygame.Rect,
+                    koof: int, block_list_local_var: int, orientation: int):
         if orientation == 0:
             self.rect = pygame.Rect(block_list_rect.centerx -
                                     self.size[0] // 2,
@@ -54,8 +39,59 @@ class CellInList:
                                     (SPACE_BLOCKS_IN_BLOCK_LIST +
                                      self.size[1]) * koof,
                                     *self.size)
-            if self.rect.y < -self.size[1]:
+        else:
+            self.rect = pygame.Rect(block_list_rect.x + block_list_local_var +
+                                    (self.size[0] +
+                                     SPACE_BLOCKS_IN_BLOCK_LIST) * koof,
+                                    block_list_rect.centery -
+                                    self.size[1] // 2,
+                                    *self.size)
+
+    def render(self, screen: pygame.Surface, block_list_rect: pygame.Rect,
+               koof: int, block_list_local_var: int, orientation: int) -> None:
+        """orientation - 0 = vertical, 1 = horizontal"""
+        self.update_rect(
+            block_list_rect, koof, block_list_local_var, orientation)
+
+        if orientation == 0:
+            if self.rect.bottom < block_list_rect.top or \
+                    self.rect.top > block_list_rect.bottom:
                 return
+        else:
+            if self.rect.right < block_list_rect.left or \
+                    self.rect.left > block_list_rect.right:
+                return
+
+        cropping = pygame.Rect(0, 0, self.rect.w, self.rect.h)
+        surf = pygame.Surface(self.rect.size)
+        if self.img is None:
+            if isinstance(self.text, str) and '\n' in self.text:
+                widgets = []
+                for line in self.text.split('\n'):
+                    widgets.append(
+                        self.font.render(line, True, self.text_color).copy())
+            else:
+                widgets = [self.font.render(
+                    self.text if isinstance(self.text, str) else
+                    self.text(), True, self.text_color)]
+            rect = self.rect.copy()
+            y_indent = 0
+            for widget in widgets:
+                font_rect = widget.get_rect()
+                if len(widgets) > 1:
+                    font_rect.center = (rect.w // 2, font_rect.h)
+                else:
+                    font_rect.center = (rect.w // 2, rect.h // 2)
+                font_rect.y += y_indent
+                surf.blit(widget, font_rect)
+                y_indent += font_rect.h
+            pygame.draw.rect(
+                surf, LIST_CELLS_COLOR, (0, 0, rect.w, rect.h),
+                width=BLOCKS_WIDTH)
+        else:
+            surf = self.img
+
+        if orientation == 0:
             if self.rect.y < block_list_rect.y:
                 cropping.y = -(self.rect.y - block_list_rect.y)
                 cropping.h = self.rect.h - cropping.y
@@ -65,14 +101,6 @@ class CellInList:
             screen.blit(surf, (self.rect.x, self.rect.y + cropping.y),
                         cropping)
         else:
-            self.rect = pygame.Rect(block_list_rect.x + block_list_local_var +
-                                    (self.size[0] +
-                                     SPACE_BLOCKS_IN_BLOCK_LIST) * koof,
-                                    block_list_rect.centery -
-                                    self.size[1] // 2,
-                                    *self.size)
-            if self.rect.x < -self.size[0]:
-                return
             if self.rect.x < block_list_rect.x:
                 cropping.x = -(self.rect.x - block_list_rect.x)
                 cropping.w = self.rect.w - cropping.x

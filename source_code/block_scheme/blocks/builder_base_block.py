@@ -21,8 +21,6 @@ class BuilderBaseBlock(PyObjectBase, pygame.sprite.Sprite):
                 self.img = None
         else:
             self.img = img
-        if isinstance(self.img, pygame.Surface):
-            self.img = pygame.transform.smoothscale(self.img, self.rect.size)
 
         self.connection_editing = None
         self.is_dragging = False

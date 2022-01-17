@@ -3,7 +3,7 @@ import sqlite3
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, \
     TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT
 from source_code.global_vars import ACTIVE_SCREEN
-from source_code.middlewares.window_transition_actions import to_main_menu
+from source_code.middlewares.window_transition_actions import to_main_menu_action
 from source_code.ui.button import PyButton
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
@@ -55,7 +55,7 @@ class PresandboxWindow(BaseWindow):
 
         self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
-                                 action=to_main_menu)
+                                 action=to_main_menu_action)
         self.all_btns.append(self.back_btn)
 
         con.close()
