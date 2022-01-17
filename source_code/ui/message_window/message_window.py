@@ -1,7 +1,7 @@
 import pygame
 from source_code import global_vars
-from source_code.constants import TEXT_COLOR
 from source_code.py_base import PyObjectBase
+from source_code.constants import MESSAGE_WINDOW_TEXT_COLOR
 
 
 class MessageWindow(PyObjectBase):
@@ -17,13 +17,13 @@ class MessageWindow(PyObjectBase):
         surf = pygame.Surface(screen.get_size())
         surf.fill((255, 255, 255))
         surf.set_alpha(50)
+        screen.blit(surf, self.rect)
 
-        widget = pygame.font.Font(None, 50).render(self.text, True, TEXT_COLOR)
+        widget = pygame.font.Font(None, 50).render(
+            self.text, True, MESSAGE_WINDOW_TEXT_COLOR)
         font_rect = widget.get_rect()
         font_rect.center = self.rect.center
         screen.blit(widget, font_rect)
-
-        screen.blit(surf, self.rect)
 
         self.is_rendered = True
 

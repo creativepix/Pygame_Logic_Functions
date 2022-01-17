@@ -3,7 +3,7 @@ import pygame
 from typing import List, Callable, Union
 from source_code.ui.list.list import PyList
 from source_code.py_base import PyObjectBase
-from source_code.constants import BLOCKS_NAME_COLOR
+from source_code.constants import TEXT_COLOR
 from source_code.errors.table_error import TableError
 
 
@@ -54,7 +54,7 @@ class PyTable(PyObjectBase):
             if any(self.titles):
                 widget = self.title_font.render(
                     self.titles[i] if isinstance(self.titles[i], str) else
-                    self.titles[i], True, BLOCKS_NAME_COLOR)
+                    self.titles[i], True, TEXT_COLOR)
                 font_rect = widget.get_rect()
                 if self.orientation == 0:
                     font_rect.y = pylist.rect.y - self.indent

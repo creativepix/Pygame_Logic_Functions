@@ -7,8 +7,11 @@ from source_code.block_scheme.blocks.input_block import InputBlock
 from source_code.block_scheme.blocks.not_block import NotBlock
 from source_code.block_scheme.blocks.or_block import OrBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
+from source_code.block_scheme.data.structure_cmds import \
+    custom_block_in_structure
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, SAVE_PIC_BTN_RECT
+from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.middlewares.window_transition_actions import to_main_menu
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
@@ -38,7 +41,11 @@ class SandboxWindow(BaseGameWindow):
             cell_block.action = make_copy_block(cell_block, self)
             base_blocklists.append(cell_block)
         for custom_block in all_custom_blocks:
-            if custom_block[0] == block_name:
+            custom_structure = cur.execute(
+                f'SELECT STRUCTURE FROM ALL_CUSTOM_BLOCKS '
+                f'WHERE BLOCK_NAME = "{custom_block[0]}"').fetchall()[0][0]
+            if custom_block[0] == block_name or custom_block_in_structure(
+                    custom_structure, block_name, cur):
                 continue
             block = CustomBlock(custom_block[0], custom_block[1],
                                 self, size_blocks, img=custom_block[2])
@@ -68,20 +75,9 @@ class SandboxWindow(BaseGameWindow):
                     dropped_action)
             self.message_window = DropFileWindow(*args)
 
-        def save_action():
-            self.update_id_connections()
-            try:
-                self.save()
-                txt = 'Successfully saved!'
-            except RecursionError:
-                txt = 'Cannot save. Cause is max recursion error.!'
-            message_rect = pygame.Rect(
-                0, 0, *global_vars.ACTIVE_SCREEN.get_size())
-            self.message_window = MessageWindow(txt, message_rect)
-
         self.save_btn = PyButton(text='Save', font=pygame.font.Font(None, 25),
                                  color=TEXT_COLOR, rect=SAVE_BTN_RECT,
-                                 action=save_action)
+                                 action=self.save_action)
         self.save_pic_btn = PyButton(text='Load Picture',
                                      font=pygame.font.Font(None, 25),
                                      color=TEXT_COLOR, rect=SAVE_PIC_BTN_RECT,
@@ -121,6 +117,10 @@ class SandboxWindow(BaseGameWindow):
             INSERT INTO ALL_CUSTOM_BLOCKS 
             VALUES({last_id},'{self.editing_block_name}','{structure}',
             '{inputs}','')""")
+
+        if not any([isinstance(block, OutputBlock)
+                    for block in self.all_blocks]):
+            raise NoOutputBlockError
 
         super()._save('ALL_CUSTOM_BLOCKS', 'BLOCK_NAME',
                       self.editing_block_name, not_in_table_action)

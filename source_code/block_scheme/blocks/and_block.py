@@ -10,14 +10,12 @@ from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 class AndBlock(BaseBlock):
     def __init__(self, base_game_window: BuilderBaseGameWindow,
                  rect: pygame.rect.Rect):
-        img_path = 'source_code/block_scheme/data/' \
-                   'block_imgs/base_blocks/g1061.png'
         super().__init__(
             base_game_window, 'and', rect,
             lambda inputs: [inputs[0] and inputs[1]], [
                 InputConnection(base_game_window, self, (100 // 3, 100)),
                 InputConnection(base_game_window, self, (100 // 3 * 2, 100))
-            ], [OutputConnection(base_game_window, self, (50, 0))], img_path)
+            ], [OutputConnection(base_game_window, self, (50, 0))])
 
     def __str__(self):
         return self.__repr__()

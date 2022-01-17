@@ -2,18 +2,15 @@ import sqlite3
 from typing import Dict, Tuple, List
 from source_code.errors.block_error import BlockError
 from source_code.block_scheme.blocks.input_block import InputBlock
+from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 
 
 def get_connection_cmd_line(
         input_connection: int, all_connnections: Dict[int, int],
         all_blocks: Dict[Tuple[List[int], List[int]], Tuple[str, str]],
-        output_connections: List[int], cur: sqlite3.Cursor = None) -> str:
+        output_connections: List[int], cur: sqlite3.Cursor) -> str:
     """метод по получению cmd линии по id-коннектора"""
-    if cur is None:
-        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
-        cur = con.cursor()
-
     additional_args = [all_connnections, all_blocks, output_connections, cur]
 
     for out, inps in all_connnections.items():
@@ -77,8 +74,14 @@ def get_structure_from_blocks(all_blocks: List[BuilderBaseBlock])\
 
 
 def get_cmd_line_from_structure(structure_line: str,
-                                cur: sqlite3.Cursor = None) -> str:
+                                cur_start: sqlite3.Cursor = None) -> str:
     """получение cmd линии по структурной линии"""
+    if cur_start is None:
+        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
+        cur = con.cursor()
+    else:
+        cur = cur_start
+
     if not any(structure_line):
         return 'True'
 
@@ -105,7 +108,7 @@ def get_cmd_line_from_structure(structure_line: str,
 
         if 'OutputConnection(' not in connections:
             if block_class != 'OutputBlock':
-                raise BlockError
+                raise NoOutputBlockError
             else:
                 input_connections.append(all_inp_cons[0])
         else:
@@ -130,4 +133,40 @@ def get_cmd_line_from_structure(structure_line: str,
             input_connection, all_connnections, all_blocks,
             output_connections, cur)
         cmd_lines += '\n'
+
+    if cur_start is None:
+        con.close()
+
     return cmd_lines.strip('\n')
+
+
+def custom_block_in_structure(structure: str, custom_block_name: str,
+                              cur_start: sqlite3.Cursor = None)\
+        -> bool:
+    """определяет, есть ли название кастомного блока в структуре (нужно для
+    того, чтобы убрать блоки из блок-листа в режиме песочницы, которые в
+    совместности могут привести к ошибке максимальной рекурсии"""
+    if cur_start is None:
+        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
+        cur = con.cursor()
+    else:
+        cur = cur_start
+
+    if 'CustomBlock(' not in structure:
+        return False
+    if f'CustomBlock({custom_block_name}' in structure:
+        return True
+
+    for custom_block in structure.split('CustomBlock(')[1:]:
+        block_name = custom_block.split(',')[0]
+        structure = cur.execute(
+                f'SELECT STRUCTURE FROM ALL_CUSTOM_BLOCKS '
+                f'WHERE BLOCK_NAME = "{block_name}"').fetchall()[0][0]
+        ans = custom_block_in_structure(structure, custom_block_name, cur)
+        if ans:
+            return True
+
+    if cur_start is None:
+        con.close()
+
+    return False

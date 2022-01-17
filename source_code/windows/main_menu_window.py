@@ -4,7 +4,7 @@ from source_code.middlewares.window_transition_actions import quit_action, \
     start_training_action, start_presandbox_action, start_preplay_action
 from source_code.ui.button import PyButton
 from source_code.constants import START_MENU_SIZE, TEXT_COLOR, \
-    SCORE_FONT_SIZE, BLOCKS_NAME_COLOR, MAIN_MENU_SCORE_RECT
+    SCORE_FONT_SIZE, MAIN_MENU_SCORE_RECT
 from source_code.windows.base_window import BaseWindow
 
 
@@ -26,7 +26,6 @@ class MainMenuWindow(BaseWindow):
         con.close()
 
     def tick(self, screen: pygame.Surface) -> None:
-        screen.fill((0, 0, 0))
         text_w, text_h = 200, 70
         otstyp = 150
 
@@ -53,10 +52,9 @@ class MainMenuWindow(BaseWindow):
 
         self.all_btns = [b1, b2, b3, b4]
 
-        for btn in self.all_btns:
-            btn.render(screen)
+        super().tick(screen)
 
         font = pygame.font.Font(None, SCORE_FONT_SIZE)
         widget = font.render(f'Sum score: {self.sum_score} / {self.max_score}',
-                             True, BLOCKS_NAME_COLOR)
-        screen.blit(widget, pygame.Rect(MAIN_MENU_SCORE_RECT))
+                             True, TEXT_COLOR)
+        screen.blit(widget, MAIN_MENU_SCORE_RECT)

@@ -1,5 +1,6 @@
 import pygame
 from source_code.py_base import PyObjectBase
+from source_code.constants import BACKGROUND_COLOR
 
 
 # Декоратор для определённых методов, при котором метод запусукается
@@ -29,17 +30,14 @@ class BaseWindow(PyObjectBase):
     def __init__(self):
         self.all_btns = []
         self.all_inp_fields = []
-        self.all_blocks = []
         self.message_window = None
 
     def file_drop(self, file_path: str) -> None:
         self.message_window.file_drop(file_path)
 
     def tick(self, screen: pygame.Surface) -> None:
-        screen.fill((0, 0, 0))
+        screen.fill(BACKGROUND_COLOR)
 
-        for block in self.all_blocks:
-            block.render(screen)
         for btn in self.all_btns:
             btn.render(screen)
 

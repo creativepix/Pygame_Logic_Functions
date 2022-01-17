@@ -54,7 +54,6 @@ def delete_custom_block_row(del_cell_in_list: CellInList, pytable: PyTable,
         block_name = pytable.pylists[block_list_id].cells[py_row_id].text
         for pylist in pytable.pylists:
             del pylist.cells[py_row_id]
-        print(block_name)
 
         cur.execute(f'DELETE FROM ALL_CUSTOM_BLOCKS '
                     f'WHERE BLOCK_NAME="{block_name}"')

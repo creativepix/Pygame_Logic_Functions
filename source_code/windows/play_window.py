@@ -14,8 +14,8 @@ from source_code.block_scheme.data.structure_cmds import \
 from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, CHECK_SOLUTION_BTN_RECT, INPUTS_RESULT_TABLE_RECT, \
     NEEDED_OUTPUTS_RESULT_TABLE_RECT, OUTPUTS_RESULT_TABLE_RECT, \
-    RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, BLOCKS_NAME_COLOR, \
-    SCORE_GAME_RECT, BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE
+    RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, SCORE_GAME_RECT, \
+    BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE
 from source_code.middlewares.window_transition_actions import to_main_menu
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
@@ -96,12 +96,13 @@ class PlayWindow(BaseGameWindow):
         if loading is None or not any(loading):
             loading = []
             rect = pygame.Rect(
-                SAVE_BTN_RECT.right, BLOCK_MIN_SIZE[1] * 2, *BLOCK_MIN_SIZE)
+                SAVE_BTN_RECT.right, BLOCK_MIN_SIZE[1] * 4, *BLOCK_MIN_SIZE)
             for _ in range(self.input_count):
                 loading.append(f'InputBlock(input,{rect},OutputConnection('
                                f'0,[],(50, 0)))')
                 rect.x += BLOCK_MIN_SIZE[0]
-            rect = pygame.Rect(SAVE_BTN_RECT.right, 0, *BLOCK_MIN_SIZE)
+            rect = pygame.Rect(
+                SAVE_BTN_RECT.right, BLOCK_MIN_SIZE[1] * 2, *BLOCK_MIN_SIZE)
             for _ in range(self.output_count):
                 loading.append(f'OutputBlock(output,{rect},InputConnection('
                                f'1,[],(50, 100)))')
@@ -149,16 +150,19 @@ class PlayWindow(BaseGameWindow):
         if score_value >= self.best_score:
             self.best_score = score_value
 
-    def save_action(self):
-        self.update_id_connections()
-        try:
-            self.save()
-            txt = 'Successfully saved!'
-        except RecursionError:
-            txt = 'Cannot save. Cause is max recursion error.!'
+        txt = f'Your score: {self.last_score}/{self.max_score}'
         message_rect = pygame.Rect(
             0, 0, *global_vars.ACTIVE_SCREEN.get_size())
         self.message_window = MessageWindow(txt, message_rect)
+
+        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
+        cur = con.cursor()
+        cur.execute(f'UPDATE ALL_LEVELS '
+                    f'SET BEST_SCORE = {self.best_score}, '
+                    f'LAST_SCORE = {self.last_score} '
+                    f'WHERE ID = {self.level_id}')
+        con.commit()
+        con.close()
 
     def make_table_results(self, results: Dict):
         font = pygame.font.Font(None, RESULTS_FONT_SIZE)
@@ -216,23 +220,15 @@ class PlayWindow(BaseGameWindow):
         font = pygame.font.Font(None, SCORE_FONT_SIZE)
         widget = font.render(
             f'Last score: {self.last_score} / {self.max_score}', True,
-            BLOCKS_NAME_COLOR)
+            TEXT_COLOR)
         screen.blit(widget, SCORE_GAME_RECT)
         widget = font.render(
             f'Best score: {self.best_score} / {self.max_score}', True,
-            BLOCKS_NAME_COLOR)
+            TEXT_COLOR)
         screen.blit(widget, BEST_GAME_SCORE_RECT)
 
         if self.message_window is not None:
             self.message_window.render(screen)
 
     def save(self) -> None:
-        con = sqlite3.connect('./source_code/block_scheme/data/blocks.db')
-        cur = con.cursor()
-        cur.execute(f'UPDATE ALL_LEVELS '
-                    f'SET BEST_SCORE = {self.best_score}, '
-                    f'LAST_SCORE = {self.last_score} '
-                    f'WHERE ID = {self.level_id}')
-        super()._save('ALL_LEVELS', 'ID', self.level_id, lambda: None, cur)
-        con.commit()
-        con.close()
+        super()._save('ALL_LEVELS', 'ID', self.level_id, lambda: None)

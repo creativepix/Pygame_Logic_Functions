@@ -1,7 +1,7 @@
 import pygame
 from typing import Callable, Union, Tuple
-from source_code.constants import BLOCKS_WIDTH, BLOCKS_NAME_COLOR, \
-    BLOCKS_COLOR, SPACE_BLOCKS_IN_BLOCK_LIST, BASE_CELL_IN_BLOCK_SIZE
+from source_code.constants import BLOCKS_WIDTH, SPACE_BLOCKS_IN_BLOCK_LIST, \
+    BASE_CELL_IN_BLOCK_SIZE, TEXT_COLOR, LIST_CELLS_COLOR
 
 
 class CellInList:
@@ -9,7 +9,8 @@ class CellInList:
     def __init__(self, text: Union[str, Callable[[], str]],
                  action: Callable = lambda: None, size: Tuple[int, int] = None,
                  font: pygame.font.Font = pygame.font.Font(None, 20),
-                 img: Union[pygame.Surface, str] = None):
+                 img: Union[pygame.Surface, str] = None,
+                 text_color: Tuple[int, int, int] = TEXT_COLOR):
         if size is not None:
             self.size = size
         else:
@@ -24,6 +25,7 @@ class CellInList:
         self.action = action
         self.rect = pygame.Rect(0, 0, *self.size)
         self.font = font
+        self.text_color = text_color
 
     def do_action(self):
         self.action()
@@ -36,12 +38,12 @@ class CellInList:
         if self.img is None:
             widget = self.font.render(
                 self.text if isinstance(self.text, str) else
-                self.text(), True, BLOCKS_NAME_COLOR)
+                self.text(), True, self.text_color)
             font_rect = widget.get_rect()
             font_rect.center = (self.rect.w // 2, self.rect.h // 2)
             surf.blit(widget, font_rect)
             pygame.draw.rect(
-                surf, BLOCKS_COLOR, (0, 0, self.rect.w, self.rect.h),
+                surf, LIST_CELLS_COLOR, (0, 0, self.rect.w, self.rect.h),
                 width=BLOCKS_WIDTH)
         else:
             surf = self.img

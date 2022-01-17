@@ -1,6 +1,8 @@
-import sqlite3
 import pygame
+import sqlite3
+from abc import abstractmethod
 from typing import List, Iterable, Type, Union, Callable
+from source_code import global_vars
 from source_code.block_scheme.blocks.and_block import AndBlock
 from source_code.block_scheme.blocks.custom_block import CustomBlock
 from source_code.block_scheme.blocks.input_block import InputBlock
@@ -18,7 +20,9 @@ from source_code.block_scheme.data.structure_cmds import \
     get_structure_from_blocks
 from source_code.constants import BLOCK_LIST_WIDTH, BLOCK_MIN_SIZE
 from source_code.errors.block_error import BlockError
+from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.global_vars import ACTIVE_SCREEN
+from source_code.ui.message_window.message_window import MessageWindow
 from source_code.windows.base_window import BaseWindow, disable_if_message, \
     mouse_down_check_message
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
@@ -32,12 +36,26 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
 
         self.id_connections = {None: None}
 
+        self.all_blocks = []
         self.is_moving = False
         self.last_mouse_pos = pygame.mouse.get_pos()
 
         rect = pygame.Rect(ACTIVE_SCREEN.get_width() - BLOCK_LIST_WIDTH, 0,
                            BLOCK_LIST_WIDTH, ACTIVE_SCREEN.get_height())
         self.choose_block_list = BlockList(available_blocklists, rect)
+
+    def save_action(self):
+        self.update_id_connections()
+        try:
+            self.save()
+            txt = 'Successfully saved!'
+        except RecursionError:
+            txt = 'Cannot save. Cause is max recursion error.'
+        except NoOutputBlockError:
+            txt = 'Cannot save. Cause is no output signal'
+        message_rect = pygame.Rect(
+            0, 0, *global_vars.ACTIVE_SCREEN.get_size())
+        self.message_window = MessageWindow(txt, message_rect)
 
     def update_id_connections(self) -> None:
         connection_id = 0
@@ -49,6 +67,8 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
 
     def tick(self, screen: pygame.Surface) -> None:
         super().tick(screen)
+        for block in self.all_blocks:
+            block.render(screen)
         self.choose_block_list.render(screen)
 
     @mouse_down_check_message
@@ -292,3 +312,7 @@ WHERE ID = {my_id}""")
         if start_cur is None:
             con.commit()
             con.close()
+
+    @abstractmethod
+    def save(self) -> None:
+        pass
