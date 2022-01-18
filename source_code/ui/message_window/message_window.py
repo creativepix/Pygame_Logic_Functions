@@ -8,7 +8,7 @@ from source_code.constants import MESSAGE_WINDOW_TEXT_COLOR, \
 
 
 class MessageWindow(PyObjectBase):
-    """Что-то наподобии диалогового окна"""
+    """UI: Диалоговое окно с всплывающим текстом"""
     def __init__(self, text: str, rect: pygame.Rect):
         self.text_lines = split_line(text, MESSAGE_WINDOW_TEXT_MAX_SYMBOLS)
         self.rect = rect

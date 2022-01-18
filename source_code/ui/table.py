@@ -8,6 +8,7 @@ from source_code.errors.table_error import TableError
 
 
 class PyTable(PyObjectBase):
+    """UI: Таблица. Формируется из PyList"""
     def __init__(self, pylists: List[PyList],
                  titles: Union[List[str], Callable[[], str]] = None,
                  title_font: pygame.font.Font = None, indent: int = 0):

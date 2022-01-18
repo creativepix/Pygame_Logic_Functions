@@ -4,6 +4,7 @@ from source_code.middlewares.load_image import load_image
 
 
 class TrainingArrow(pygame.sprite.Sprite):
+    """UI: Стрелка-указатель во время обучения"""
     def __init__(self, training_stage: int = None):
         super().__init__()
 

@@ -4,7 +4,7 @@ from source_code.ui.message_window.message_window import MessageWindow
 
 
 class DropFileWindow(MessageWindow):
-    """Окно, в которое вкидывается файл"""
+    """UI: Окно, в которое вкидывается файл"""
     def __init__(self, text1: str, text2: str, rect: pygame.Rect,
                  available_tags: List[str],
                  dropped_action: Callable[[str], None]):
