@@ -1,6 +1,8 @@
+import math
 import pygame
 from abc import abstractmethod
 from source_code.py_base import PyObjectBase
+from source_code.constants import BLOCK_MIN_SIZE
 from source_code.middlewares.load_image import load_image
 
 
@@ -27,6 +29,7 @@ class BuilderBaseBlock(PyObjectBase, pygame.sprite.Sprite):
         self.is_resizing = False
         self.last_mouse_pos = None
         self.last_rect = self.rect.copy()
+        self.size_koof = int(math.log(self.rect.w // BLOCK_MIN_SIZE[0], 2))
 
     @abstractmethod
     def zoom(self, koof: int) -> None:

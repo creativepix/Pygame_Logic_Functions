@@ -21,6 +21,7 @@ from source_code.constants import BLOCK_LIST_WIDTH, BLOCK_MIN_SIZE
 from source_code.errors.block_error import BlockError
 from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.global_vars import ACTIVE_SCREEN
+from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.windows.base_window import BaseWindow, disable_if_message, \
     mouse_down_check_message
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
@@ -28,7 +29,7 @@ from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 # Базовое игровое окно. На нём базируются песочница и сама игра
 class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
-    def __init__(self, available_blocklists: Iterable):
+    def __init__(self, available_blocklists: Iterable[CellInBlockList]):
         from source_code.ui.blocklist.blocklist import BlockList
         super().__init__()
 
@@ -102,7 +103,7 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
             for block in self.all_blocks:
                 block.move(pygame.mouse.get_pos()[0] - self.last_mouse_pos[0],
                            pygame.mouse.get_pos()[1] - self.last_mouse_pos[1])
-                block.last_rect = block.rect
+                block.last_rect = block.rect.copy()
             self.last_mouse_pos = pygame.mouse.get_pos()
             return
 
@@ -124,12 +125,35 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
             self.choose_block_list.mouse_wheel(koof)
             return
 
-        for block in self.all_blocks:
-            block.zoom(koof)
-            if any([block.rect.colliderect(block_check.rect)
-                    for block_check in self.all_blocks
-                    if block_check != block]):
-                block.zoom(-koof)
+        if len(self.all_blocks) > 0:
+            for block in self.all_blocks:
+                block.zoom(koof)
+
+            # вычисление x_dif, y_dif относительно первого попавшегося блока
+            x_dif = self.all_blocks[0].rect.x - self.all_blocks[0].last_rect.x
+            y_dif = self.all_blocks[0].rect.y - self.all_blocks[0].last_rect.y
+
+            for block in self.all_blocks:
+                if block.last_rect != block.rect:
+                    if x_dif != 0:
+                        block.move(-x_dif, -y_dif)
+                    else:
+                        block.rect.x = block.last_rect.x
+                        block.rect.y = block.last_rect.y
+
+            i = 0
+            while i != len(self.all_blocks):
+                if self.all_blocks[i].last_rect == self.all_blocks[i].rect:
+                    i += 1
+                else:
+                    self.all_blocks[i].eliminate_collider_intersection(
+                        self.all_blocks[i].is_intersected())
+                    if self.all_blocks[i].is_intersected():
+                        i = 0
+                    else:
+                        i += 1
+            for block in self.all_blocks:
+                block.last_rect = block.rect.copy()
 
     @disable_if_message
     def double_mouse_click(self) -> None:

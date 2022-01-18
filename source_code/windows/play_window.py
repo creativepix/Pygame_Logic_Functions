@@ -76,7 +76,7 @@ class PlayWindow(BaseGameWindow):
             cell_block = CellInBlockList(block, lambda: None)
             cell_block.action = make_copy_block(cell_block, self)
             custom_blocklists.append(cell_block)
-        all_listblocks = (base_blocklists + custom_blocklists)
+        all_listblocks = base_blocklists + custom_blocklists
 
         super().__init__(all_listblocks)
         self.show_message('Initializing level...')

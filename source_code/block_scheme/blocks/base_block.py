@@ -1,10 +1,12 @@
+import math
 import pygame
 from typing import List, Union, Callable
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCKS_COLOR, BLOCKS_NAME_COLOR, \
-    BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE
+    BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE, \
+    BLOCK_TEXT_MAX_SIZE, BLOCK_TEXT_MIN_SIZE
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
@@ -21,10 +23,15 @@ class BaseBlock(BuilderBaseBlock):
         self.update_output_signals()
 
     def zoom(self, koof: int) -> None:
-        last_center = self.rect.center
-        self.resize(koof * 2, koof * 2)
-        self.rect.center = last_center
-        self.last_rect = self.rect.copy()
+        new_size_koof = min(max(self.size_koof + koof, 0),
+                            math.log(BLOCK_TEXT_MAX_SIZE //
+                                     BLOCK_TEXT_MIN_SIZE, 2))
+        if new_size_koof == self.size_koof + koof:
+            self.size_koof += koof
+            self.rect.x *= 2 ** koof
+            self.rect.y *= 2 ** koof
+            self.rect.w *= 2 ** koof
+            self.rect.h *= 2 ** koof
 
     def move(self, x_dif: int, y_dif: int) -> None:
         self.rect = self.rect.move(x_dif, y_dif)
@@ -45,7 +52,8 @@ class BaseBlock(BuilderBaseBlock):
             pygame.draw.rect(screen, BLOCKS_COLOR, self.rect,
                              width=BLOCKS_WIDTH)
 
-            font = pygame.font.Font(None, 20)
+            font = pygame.font.Font(None, BLOCK_TEXT_MIN_SIZE *
+                                    (2 ** self.size_koof))
             widget = font.render(self.name, True, BLOCKS_NAME_COLOR)
             font_rect = widget.get_rect()
             font_rect.center = self.rect.center
@@ -82,17 +90,34 @@ class BaseBlock(BuilderBaseBlock):
         if self.connection_editing is not None:
             return
 
-        action = None
         if self.is_dragging:
-            action = self.move
-        elif self.is_resizing:
-            action = self.resize
-        if self.is_dragging or self.is_resizing:
             # использую замысловатые методы вместо pygame.mouse.get_rel(),
-            # потому что этот метод при первом значении выдаёт всё неправильное
-            action(mouse_pos[0] - self.last_mouse_pos[0],
-                   mouse_pos[1] - self.last_mouse_pos[1])
+            # потому что pygame.mouse.get_rel() при первом обращении
+            # выдаёт всё неправильное
+            self.move(mouse_pos[0] - self.last_mouse_pos[0],
+                      mouse_pos[1] - self.last_mouse_pos[1])
             self.last_mouse_pos = mouse_pos
+        elif self.is_resizing:
+            koof = None
+            if (mouse_pos[0] - self.last_mouse_pos[0] >=
+                    self.rect.w * 2 - self.rect.w or
+                    mouse_pos[1] - self.last_mouse_pos[1] >=
+                    self.rect.h * 2 - self.rect.h):
+                koof = 1
+            elif (mouse_pos[0] - self.last_mouse_pos[0] <=
+                    self.rect.w // 2 - self.rect.w or
+                    mouse_pos[1] - self.last_mouse_pos[1] <=
+                    self.rect.h // 2 - self.rect.h):
+                koof = -1
+            if koof is not None:
+                new_size_koof = min(max(self.size_koof + koof, 0),
+                                    math.log(BLOCK_TEXT_MAX_SIZE //
+                                             BLOCK_TEXT_MIN_SIZE, 2))
+                if new_size_koof == self.size_koof + koof:
+                    self.size_koof += koof
+                    self.rect.w *= 2 ** koof
+                    self.rect.h *= 2 ** koof
+                    self.last_mouse_pos = mouse_pos
 
     def mouse_up(self) -> None:
         for connection in self.inputs + self.outputs:
@@ -105,12 +130,21 @@ class BaseBlock(BuilderBaseBlock):
         self.is_dragging = False
         self.last_mouse_pos = None
 
+        self.eliminate_collider_intersection()
+
+    def is_intersected(self) -> bool:
         for collide_rect in self.base_game_window.all_blocks:
             if self.rect is not collide_rect.rect and \
                     self.rect.colliderect(collide_rect.rect):
-                self.rect = self.last_rect.copy()
-                return
-        self.last_rect = self.rect.copy()
+                return True
+        return False
+
+    def eliminate_collider_intersection(self, saving_last_rect: bool = True):
+        if self.is_intersected():
+            self.rect = self.last_rect.copy()
+            self.size_koof = int(math.log(self.rect.w // BLOCK_MIN_SIZE[0], 2))
+        if saving_last_rect:
+            self.last_rect = self.rect.copy()
 
     def update_output_signals(self):
         if any(self.inputs) and any(self.outputs):
