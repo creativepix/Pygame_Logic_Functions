@@ -9,10 +9,11 @@ from source_code.block_scheme.blocks.or_block import OrBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.block_scheme.data.structure_cmds import \
     custom_block_in_structure
-from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
-    BACK_BTN_RECT, SAVE_PIC_BTN_RECT
+from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
+    BACK_BTN_RECT, SAVE_PIC_BTN_RECT, BLOCK_SIZE_IN_BLOCK_LIST
 from source_code.errors.no_output_block_error import NoOutputBlockError
-from source_code.middlewares.window_transition_actions import to_main_menu_action
+from source_code.middlewares.window_transition_actions import \
+    to_main_menu_action
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
     make_copy_block
@@ -28,7 +29,7 @@ class SandboxWindow(BaseGameWindow):
         all_custom_blocks = cur.execute(
             f"SELECT BLOCK_NAME, STRUCTURE, IMAGE_PATH "
             f"FROM ALL_CUSTOM_BLOCKS").fetchall()
-        size_blocks = pygame.Rect(0, 0, *BLOCK_MIN_SIZE)
+        size_blocks = pygame.Rect(0, 0, *BLOCK_SIZE_IN_BLOCK_LIST)
 
         base_blocklists, custom_blocklists = [], []
         for block in [InputBlock(self, size_blocks),

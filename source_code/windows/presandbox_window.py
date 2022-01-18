@@ -1,9 +1,10 @@
 import pygame
 import sqlite3
-from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, \
+from source_code.constants import BLOCK_SIZE_IN_BLOCK_LIST, TEXT_COLOR, \
     TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT
 from source_code.global_vars import ACTIVE_SCREEN
-from source_code.middlewares.window_transition_actions import to_main_menu_action
+from source_code.middlewares.window_transition_actions import \
+    to_main_menu_action
 from source_code.ui.button import PyButton
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
@@ -24,7 +25,7 @@ class PresandboxWindow(BaseWindow):
         all_custom_blocks = cur.execute(
             f"SELECT BLOCK_NAME, STRUCTURE, IMAGE_PATH "
             f"FROM ALL_CUSTOM_BLOCKS").fetchall()
-        size_blocks = pygame.Rect(0, 0, *BLOCK_MIN_SIZE)
+        size_blocks = pygame.Rect(0, 0, *BLOCK_SIZE_IN_BLOCK_LIST)
 
         cells_in_list, del_cells_in_list = [], []
         for custom_block in all_custom_blocks:
@@ -44,8 +45,7 @@ class PresandboxWindow(BaseWindow):
         rect = pygame.Rect(0, 150, ACTIVE_SCREEN.get_width(),
                            ACTIVE_SCREEN.get_height() - 150)
         choose_list = PyList(cells_in_list, rect, 0, (0, 0, 0, 0))
-        rect = pygame.Rect(size_blocks.w - TABLE_X_SYMBOL_SIZE[0] // 3 * 2,
-                           rect.y, rect.w, rect.h)
+        rect = pygame.Rect(size_blocks.w, rect.y, rect.w, rect.h)
         del_cells_list = PyList(del_cells_in_list, rect, 0, (0, 0, 0, 0))
         self.choose_edit_block_table = PyTable([choose_list, del_cells_list])
 

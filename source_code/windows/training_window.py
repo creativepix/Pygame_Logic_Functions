@@ -7,7 +7,7 @@ from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.constants import TRAINING_INSTRUCTIONS, \
     TRAINING_STARTING_DRAWING_STAGE, TRAINING_UPPER_TEXT_SIZE, \
     TRAINING_UPPER_TEXT_RECT, TRAINING_UPPER_TEXT_MAX_SYMBOLS, \
-    TRAININ_TEXT_LINES_INDENT, TRAINING_ARROW_SIZE, SCORE_GAME_RECT, \
+    TRAINING_TEXT_LINES_INDENT, TRAINING_ARROW_SIZE, SCORE_GAME_RECT, \
     TRAINING_TEXT_COLOR, BACKGROUND_COLOR
 from source_code.middlewares.splitting_line import split_line
 from source_code.middlewares.window_transition_actions import to_main_menu_action
@@ -100,7 +100,7 @@ class TrainingWindow(PlayWindow):
             widget = pygame.font.Font(None, TRAINING_UPPER_TEXT_SIZE).render(
                 line, True, TRAINING_TEXT_COLOR)
             screen.blit(widget, rect)
-            rect.y += TRAININ_TEXT_LINES_INDENT
+            rect.y += TRAINING_TEXT_LINES_INDENT
 
         def arrow_to_block_class(block_class: Type):
             nonlocal rect, rotating

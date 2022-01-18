@@ -11,14 +11,16 @@ from source_code.block_scheme.blocks.or_block import OrBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.block_scheme.data.structure_cmds import \
     get_cmd_line_from_structure, get_structure_from_blocks
-from source_code.constants import BLOCK_MIN_SIZE, TEXT_COLOR, SAVE_BTN_RECT, \
+from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, CHECK_SOLUTION_BTN_RECT, INPUTS_RESULT_TABLE_RECT, \
     NEEDED_OUTPUTS_RESULT_TABLE_RECT, OUTPUTS_RESULT_TABLE_RECT, \
     RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, SCORE_GAME_RECT, \
-    BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH, \
-    STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE
+    BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH,\
+    STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, BLOCK_SIZE_IN_BLOCK_LIST, \
+    DESCRIPTION_BTN_RECT
 from source_code.middlewares.splitting_line import split_line
-from source_code.middlewares.window_transition_actions import to_main_menu_action
+from source_code.middlewares.window_transition_actions import \
+    to_main_menu_action
 from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.blocklist.standard_cell_block_actions import \
     make_copy_block
@@ -61,7 +63,7 @@ class PlayWindow(BaseGameWindow):
         self.max_score = max_score
         self.last_score = last_score
 
-        size_blocks = pygame.Rect(0, 0, *BLOCK_MIN_SIZE)
+        size_blocks = pygame.Rect(0, 0, *BLOCK_SIZE_IN_BLOCK_LIST)
 
         base_blocklists, custom_blocklists = [], []
         for block in [AndBlock(self, size_blocks),
@@ -91,27 +93,39 @@ class PlayWindow(BaseGameWindow):
                                   font=pygame.font.Font(None, 25),
                                   rect=CHECK_SOLUTION_BTN_RECT,
                                   action=self.check_solution_action)
+        self.description_btn = PyButton(text='Description', color=TEXT_COLOR,
+                                        font=pygame.font.Font(None, 25),
+                                        rect=DESCRIPTION_BTN_RECT,
+                                        action=self.show_description_action)
 
-        self.all_btns = [self.save_btn, self.back_btn, self.check_btn]
+        self.all_btns = [self.save_btn, self.back_btn, self.check_btn,
+                         self.description_btn]
 
         loading = level[1]
         if loading is None or not any(loading):
             loading = []
             rect = pygame.Rect(STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[0],
                                STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE[1]
-                               + BLOCK_MIN_SIZE[1] * 2, *BLOCK_MIN_SIZE)
+                               + BLOCK_SIZE_IN_BLOCK_LIST[1] * 2,
+                               *BLOCK_SIZE_IN_BLOCK_LIST)
             for _ in range(self.input_count):
                 loading.append(f'InputBlock(input,{rect},OutputConnection('
                                f'0,[],(50, 0)))')
-                rect.x += BLOCK_MIN_SIZE[0]
+                rect.x += BLOCK_SIZE_IN_BLOCK_LIST[0]
             rect = pygame.Rect(
-                *STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, *BLOCK_MIN_SIZE)
+                *STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE,
+                *BLOCK_SIZE_IN_BLOCK_LIST)
             for _ in range(self.output_count):
                 loading.append(f'OutputBlock(output,{rect},InputConnection('
                                f'1,[],(50, 100)))')
-                rect.x += BLOCK_MIN_SIZE[0]
+                rect.x += BLOCK_SIZE_IN_BLOCK_LIST[0]
             loading = '|'.join(loading)
         self.load(loading)
+
+        info = cur.execute(
+            f"SELECT DESCRIPTION FROM ALL_LEVELS WHERE "
+            f"ID = {level_id}").fetchall()[0]
+        self.description = info[0]
 
         self.table_results = None
         self.make_table_results(
@@ -146,6 +160,9 @@ class PlayWindow(BaseGameWindow):
             all_ans[inputs] = (list(map(str, outputs)),
                                list(map(lambda x: str(int(x)), ans)))
         return all_ans
+
+    def show_description_action(self):
+        self.show_message(self.description)
 
     def check_solution_action(self):
         self.show_message('Checking solution...')
