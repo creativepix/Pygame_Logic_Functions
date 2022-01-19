@@ -1,7 +1,7 @@
 import pygame
 from abc import abstractmethod
-from source_code.constants import CONNECTION_LOCAL_RADIUS_PERCENTAGE
 from source_code.py_base import PyObjectBase
+from source_code.constants import CONNECTION_LOCAL_RADIUS_PERCENTAGE
 
 
 class BuilderBaseConnection(PyObjectBase):

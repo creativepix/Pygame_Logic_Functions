@@ -1,7 +1,7 @@
 import pygame
 from typing import Iterable, Tuple, Union
-from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 from source_code.ui.list.list import PyList
+from source_code.ui.blocklist.cell_in_blocklist import CellInBlockList
 
 
 class BlockList(PyList):

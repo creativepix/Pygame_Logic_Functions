@@ -2,8 +2,6 @@ import pygame
 import sqlite3
 from typing import Callable
 from source_code import global_vars
-from source_code.middlewares.window_transition_actions import \
-    start_presandbox_action
 from source_code.ui.table import PyTable
 from source_code.ui.input_field import PyInputField
 from source_code.windows.base_window import BaseWindow
