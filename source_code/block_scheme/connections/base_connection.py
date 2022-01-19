@@ -4,7 +4,8 @@ from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCK_CONNECTION_TRUE_COLOR, \
-    BLOCK_CONNECTION_FALSE_COLOR, BLOCKS_INDENT_FOR_RESIZING
+    BLOCK_CONNECTION_FALSE_COLOR, BLOCKS_INDENT_FOR_RESIZING, \
+    CONNECTION_MAX_RADIUS_SIZE
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
@@ -23,7 +24,8 @@ class BaseConnection(BuilderBaseConnection):
             int(p_rect.y + p_rect.h / 100 * self.local_coord_percents[1])
         ], min(
             int(self.parent_block.rect.w / 100 * self.local_radius_percentage),
-            int(self.parent_block.rect.h / 100 * 25)
+            int(self.parent_block.rect.h / 100 * 25),
+            CONNECTION_MAX_RADIUS_SIZE
         ))
 
         if self.is_attached_to_cursor:

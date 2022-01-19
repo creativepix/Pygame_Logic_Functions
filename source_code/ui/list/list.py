@@ -28,7 +28,8 @@ class PyList(PyObjectBase):
         self.len_cells = len(self.cells)
 
     def scroll(self, koof: int) -> None:
-        self.local_var += koof * 10  # Заменил -= на +=: скроллить надо в противоположную сторону
+        # Заменил -= на +=: скроллить надо в противоположную сторону
+        self.local_var += koof * 10
 
     def mouse_down(self) -> None:
         for cell in self.cells:

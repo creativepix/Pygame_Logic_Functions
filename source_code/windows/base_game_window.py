@@ -160,6 +160,16 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
         for block in self.all_blocks:
             block.double_mouse_click()
 
+    def update_input_output_ids(self):
+        input_id, output_id = 0, 0
+        for block in self.all_blocks:
+            if isinstance(block, InputBlock):
+                input_id += 1
+                block.input_id = input_id
+            if isinstance(block, OutputBlock):
+                output_id += 1
+                block.output_id = output_id
+
     def load(self, structure_line: str,
              cursor: sqlite3.Cursor = None) -> None:
         """загрузка сохранённой структуры"""
@@ -301,6 +311,8 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
                 if con_to_edit_id is not None and \
                         all_con_ids[con_to_edit_id] is not None:
                     con_to_edit.attach(all_con_ids[con_to_edit_id])
+
+        self.update_input_output_ids()
 
     def _save(self, table: str, checking_parameter: str,
               value_checking_parameter: Union[int, str],

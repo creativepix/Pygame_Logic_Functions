@@ -1,5 +1,6 @@
 import pygame
 import sqlite3
+from typing import Callable
 from source_code import global_vars
 from source_code.block_scheme.blocks.and_block import AndBlock
 from source_code.block_scheme.blocks.custom_block import CustomBlock
@@ -37,8 +38,14 @@ class SandboxWindow(BaseGameWindow):
                       AndBlock(self, size_blocks),
                       OrBlock(self, size_blocks),
                       NotBlock(self, size_blocks)]:
+            def cell_block_action(arg: CellInBlockList) -> Callable:
+                def cmd():
+                    make_copy_block(arg, self)()
+                    self.update_input_output_ids()
+                return cmd
+
             cell_block = CellInBlockList(block, lambda: None)
-            cell_block.action = make_copy_block(cell_block, self)
+            cell_block.action = cell_block_action(cell_block)
             base_blocklists.append(cell_block)
         for custom_block in all_custom_blocks:
             custom_structure = cur.execute(
@@ -104,6 +111,12 @@ class SandboxWindow(BaseGameWindow):
                     except IndexError:
                         block.outputs[0].signal = False
         con.close()
+
+    def mouse_down(self, mouse_button: int) -> None:
+        super().mouse_down(mouse_button)
+
+        if mouse_button == 3:
+            self.update_input_output_ids()
 
     def save(self) -> None:
         def not_in_table_action(cur: sqlite3.Cursor, structure: str,
