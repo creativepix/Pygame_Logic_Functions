@@ -29,7 +29,8 @@ from source_code.ui.list.cell_in_list import CellInList
 from source_code.ui.list.list import PyList
 from source_code.ui.table import PyTable
 from source_code.windows.base_game_window import BaseGameWindow
-from source_code.windows.base_window import mouse_down_check_message
+from source_code.windows.base_window import mouse_down_check_message, \
+    disable_if_message
 
 
 class PlayWindow(BaseGameWindow):
@@ -235,6 +236,7 @@ class PlayWindow(BaseGameWindow):
         else:
             super().mouse_down(mouse_button)
 
+    @disable_if_message
     def mouse_wheel(self, koof: int) -> None:
         if self.table_results.rect.collidepoint(pygame.mouse.get_pos()):
             self.table_results.mouse_wheel(koof)

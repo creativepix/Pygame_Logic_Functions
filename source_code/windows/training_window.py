@@ -12,6 +12,8 @@ from source_code.middlewares.splitting_line import split_line
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
 from source_code.ui.training_arrow import TrainingArrow
+from source_code.windows.base_window import mouse_down_check_message, \
+    disable_if_message
 from source_code.windows.play_window import PlayWindow
 
 
@@ -30,11 +32,13 @@ class TrainingWindow(PlayWindow):
     def save_action(self):
         self.show_message('You cannot save training level')
 
+    @disable_if_message
     def mouse_wheel(self, koof: int) -> None:
         if koof > 0 and self.stage == 6:
             self.stage += 1
         super().mouse_wheel(koof)
 
+    @mouse_down_check_message
     def mouse_down(self, mouse_button: int) -> None:
         if self.stage == 12:
             len_not_blocks = len([block for block in self.all_blocks
@@ -54,6 +58,7 @@ class TrainingWindow(PlayWindow):
         else:
             super().mouse_down(mouse_button)
 
+    @disable_if_message
     def mouse_up(self) -> None:
         super().mouse_up()
         if self.stage == 5:
@@ -79,6 +84,7 @@ class TrainingWindow(PlayWindow):
             if score_value == 1:
                 self.stage += 1
 
+    @disable_if_message
     def double_mouse_click(self) -> None:
         super().double_mouse_click()
         if self.stage == 10:

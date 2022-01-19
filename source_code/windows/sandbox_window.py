@@ -1,3 +1,6 @@
+import os
+import shutil
+import random
 import pygame
 import sqlite3
 from typing import Callable
@@ -11,7 +14,8 @@ from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.block_scheme.data.structure_cmds import \
     custom_block_in_structure
 from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
-    BACK_BTN_RECT, SAVE_PIC_BTN_RECT, BLOCK_SIZE_IN_BLOCK_LIST
+    BACK_BTN_RECT, SAVE_PIC_BTN_RECT, BLOCK_SIZE_IN_BLOCK_LIST, \
+    CUSTOM_BLOCK_IMAGES_PATH
 from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -21,6 +25,7 @@ from source_code.ui.blocklist.standard_cell_block_actions import \
 from source_code.ui.button import PyButton
 from source_code.ui.message_window.drop_file_window import DropFileWindow
 from source_code.windows.base_game_window import BaseGameWindow
+from source_code.windows.base_window import mouse_down_check_message
 
 
 class SandboxWindow(BaseGameWindow):
@@ -67,11 +72,20 @@ class SandboxWindow(BaseGameWindow):
 
         def save_pic_action():
             def dropped_action(path: str):
+                all_imgs = os.listdir(CUSTOM_BLOCK_IMAGES_PATH)
+                randing = random.randint(0, 10 ** 10)
+                new_path = f'{CUSTOM_BLOCK_IMAGES_PATH}/' \
+                           f'{randing}{path[path.rindex("."):]}'
+                while new_path in all_imgs:
+                    randing = random.randint(0, 10 ** 10)
+                    new_path = f'{CUSTOM_BLOCK_IMAGES_PATH}/' \
+                               f'{randing}{path[path.rindex("."):]}'
+                shutil.copy2(path, new_path)
                 con_now = sqlite3.connect(
                     './source_code/block_scheme/data/blocks.db')
                 cur_now = con_now.cursor()
                 cur_now.execute(f'UPDATE ALL_CUSTOM_BLOCKS SET IMAGE_PATH = '
-                                f'"{path}" WHERE BLOCK_NAME = '
+                                f'"{new_path}" WHERE BLOCK_NAME = '
                                 f'"{self.editing_block_name}"')
                 con_now.commit()
                 con_now.close()
@@ -112,6 +126,7 @@ class SandboxWindow(BaseGameWindow):
                         block.outputs[0].signal = False
         con.close()
 
+    @mouse_down_check_message
     def mouse_down(self, mouse_button: int) -> None:
         super().mouse_down(mouse_button)
 

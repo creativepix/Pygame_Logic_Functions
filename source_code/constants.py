@@ -88,6 +88,9 @@ OUTPUTS_RESULT_TABLE_RECT = pygame.Rect(
     130, 140 + RESULT_TITLES_INDENT, 50, 450)
 # Blocks
 BASE_BLOCK_IMAGES_PATH = 'source_code/block_scheme/data/block_imgs/base_blocks'
+CUSTOM_BLOCK_IMAGES_PATH = \
+ 'source_code/block_scheme/data/block_imgs/custom_blocks'
+NOT_EDITABLE_BLOCKS = ('and', 'or', 'not', 'xor', 'xnor', 'nand', 'nor')
 MAX_LEN_BLOCK_NAME = 7
 BLOCK_MIN_SIZE = (30, 30)
 BLOCK_MAX_SIZE = (240, 240)

@@ -2,12 +2,15 @@ import pygame
 import sqlite3
 from typing import Callable
 from source_code import global_vars
+from source_code.middlewares.window_transition_actions import \
+    start_presandbox_action
 from source_code.ui.table import PyTable
 from source_code.ui.input_field import PyInputField
 from source_code.windows.base_window import BaseWindow
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.windows.sandbox_window import SandboxWindow
-from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME
+from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME, \
+    NOT_EDITABLE_BLOCKS
 
 
 def open_entering_custom_block_name(
@@ -16,7 +19,10 @@ def open_entering_custom_block_name(
     """Создать новый кастомный блок с вводом его имени"""
     def cmd() -> None:
         def open_sandbox_window(block_name: str) -> None:
-            if any(block_name):
+            if block_name in NOT_EDITABLE_BLOCKS:
+                global_vars.ACTIVE_WINDOW.show_message(
+                    'You cannot edit base block')
+            elif any(block_name):
                 global_vars.ACTIVE_WINDOW = SandboxWindow(block_name)
 
         inp_field = PyInputField(font=pygame.font.Font(None, 25),

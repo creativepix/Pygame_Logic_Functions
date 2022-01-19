@@ -1,7 +1,7 @@
 import pygame
 import sqlite3
 from source_code.constants import BLOCK_SIZE_IN_BLOCK_LIST, TEXT_COLOR, \
-    TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT
+    TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT, NOT_EDITABLE_BLOCKS
 from source_code.global_vars import ACTIVE_SCREEN
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -12,7 +12,8 @@ from source_code.ui.list.standard_cell_list_actions import \
     open_entering_custom_block_name, choose_for_edit_block, \
     delete_custom_block_row
 from source_code.ui.table import PyTable
-from source_code.windows.base_window import BaseWindow, disable_if_message
+from source_code.windows.base_window import BaseWindow, disable_if_message, \
+    mouse_down_check_message
 
 
 # окно, в котором происходит выбор блока для редактирования в песочнице
@@ -24,7 +25,8 @@ class PresandboxWindow(BaseWindow):
         cur = con.cursor()
         all_custom_blocks = cur.execute(
             f"SELECT BLOCK_NAME, STRUCTURE, IMAGE_PATH "
-            f"FROM ALL_CUSTOM_BLOCKS").fetchall()
+            f"FROM ALL_CUSTOM_BLOCKS WHERE BLOCK_NAME NOT IN "
+            f"{NOT_EDITABLE_BLOCKS}").fetchall()
         size_blocks = pygame.Rect(0, 0, *BLOCK_SIZE_IN_BLOCK_LIST)
 
         cells_in_list, del_cells_in_list = [], []
@@ -76,7 +78,7 @@ class PresandboxWindow(BaseWindow):
     def mouse_wheel(self, koof: int) -> None:
         self.choose_edit_block_table.mouse_wheel(koof)
 
-    @disable_if_message
+    @mouse_down_check_message
     def mouse_down(self, mouse_button: int) -> None:
         super().mouse_down(mouse_button)
         if mouse_button == 1:
