@@ -208,7 +208,7 @@ class PlayWindow(BaseGameWindow):
                 txt = split_line(''.join(needed_outputs), RESULTS_MAX_SYMBOLS)
                 needed_outputs_lists.append(
                     CellInList('\n'.join(txt), size=cell_size, font=font))
-                txt = split_line(('+ ' if i == 1 else '- ') +
+                txt = split_line(('+' if i == 1 else '-') +
                                  ''.join(outputs), RESULTS_MAX_SYMBOLS)
                 outputs_lists.append(
                     CellInList('\n'.join(txt), size=cell_size, font=font))
@@ -242,8 +242,6 @@ class PlayWindow(BaseGameWindow):
             super().mouse_wheel(koof)
 
     def tick(self, screen: pygame.Surface) -> None:
-        super().tick(screen)
-
         self.table_results.render(screen)
 
         font = pygame.font.Font(None, SCORE_FONT_SIZE)
@@ -256,8 +254,7 @@ class PlayWindow(BaseGameWindow):
             TEXT_COLOR)
         screen.blit(widget, BEST_GAME_SCORE_RECT)
 
-        if self.message_window is not None:
-            self.message_window.render(screen)
+        super().tick(screen)
 
     def save(self) -> None:
         super()._save('ALL_LEVELS', 'ID', self.level_id, lambda: None)

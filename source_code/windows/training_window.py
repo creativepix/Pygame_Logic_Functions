@@ -1,6 +1,5 @@
 import pygame
 from typing import Type
-from source_code import global_vars
 from source_code.block_scheme.blocks.input_block import InputBlock
 from source_code.block_scheme.blocks.not_block import NotBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
@@ -8,10 +7,10 @@ from source_code.constants import TRAINING_INSTRUCTIONS, \
     TRAINING_STARTING_DRAWING_STAGE, TRAINING_UPPER_TEXT_SIZE, \
     TRAINING_UPPER_TEXT_RECT, TRAINING_UPPER_TEXT_MAX_SYMBOLS, \
     TRAINING_TEXT_LINES_INDENT, TRAINING_ARROW_SIZE, SCORE_GAME_RECT, \
-    TRAINING_TEXT_COLOR, BACKGROUND_COLOR
+    TRAINING_TEXT_COLOR
 from source_code.middlewares.splitting_line import split_line
-from source_code.middlewares.window_transition_actions import to_main_menu_action
-from source_code.ui.message_window.message_window import MessageWindow
+from source_code.middlewares.window_transition_actions import \
+    to_main_menu_action
 from source_code.ui.training_arrow import TrainingArrow
 from source_code.windows.play_window import PlayWindow
 
@@ -89,11 +88,6 @@ class TrainingWindow(PlayWindow):
                 self.stage += 1
 
     def tick(self, screen: pygame.Surface) -> None:
-        if self.stage < TRAINING_STARTING_DRAWING_STAGE:
-            screen.fill(BACKGROUND_COLOR)
-        else:
-            super().tick(screen)
-
         rect = TRAINING_UPPER_TEXT_RECT.copy()
         for line in split_line(TRAINING_INSTRUCTIONS[self.stage],
                                TRAINING_UPPER_TEXT_MAX_SYMBOLS):
@@ -147,6 +141,9 @@ class TrainingWindow(PlayWindow):
             self.training_arrow.rect = rect
             self.training_arrow.rotating = rotating
             self.training_arrow.render(screen)
+
+        if self.stage >= TRAINING_STARTING_DRAWING_STAGE:
+            super().tick(screen)
 
     @property
     def stage(self) -> int:

@@ -43,3 +43,11 @@ class MessageWindow(PyObjectBase):
     def mouse_down(self) -> None:
         if self.is_rendered and self.rect.collidepoint(pygame.mouse.get_pos()):
             global_vars.ACTIVE_WINDOW.hide_message()
+
+    @property
+    def text(self) -> str:
+        return '\n'.join(self.text_lines)
+
+    @text.setter
+    def text(self, value):
+        self.text_lines = split_line(value, MESSAGE_WINDOW_TEXT_MAX_SYMBOLS)

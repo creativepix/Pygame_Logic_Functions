@@ -4,17 +4,20 @@ from source_code.block_scheme.connections.input_connection import \
     InputConnection
 from source_code.block_scheme.connections.output_connection import \
     OutputConnection
+from source_code.constants import BASE_BLOCK_IMAGES_PATH
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class NotBlock(BaseBlock):
     def __init__(self, base_game_window: BuilderBaseGameWindow,
                  rect: pygame.rect.Rect):
+        img_path = f'{BASE_BLOCK_IMAGES_PATH}/not.png'
         super().__init__(
             base_game_window, 'not', rect,
             lambda inputs: [not inputs[0]], [
                 InputConnection(base_game_window, self, (50, 100))
-            ], [OutputConnection(base_game_window, self, (50, 0))])
+            ], [OutputConnection(base_game_window, self, (50, 0))],
+            img=img_path)
 
     def __str__(self):
         return self.__repr__()

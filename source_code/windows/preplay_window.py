@@ -70,7 +70,6 @@ class PreplayWindow(BaseWindow):
         con.close()
 
     def tick(self, screen: pygame.Surface) -> None:
-        super().tick(screen)
         self.choose_level_table.render(screen)
         font = pygame.font.Font(None, 75)
         for i, line in enumerate(['Выберите уровень',
@@ -80,6 +79,7 @@ class PreplayWindow(BaseWindow):
             font_rect.center = (self.choose_level_table.rect.centerx,
                                 i * 50)
             screen.blit(widget, font_rect)
+        super().tick(screen)
 
     @disable_if_message
     def mouse_wheel(self, koof: int) -> None:

@@ -1,7 +1,6 @@
 import pygame
 from source_code import global_vars
 from source_code.py_base import PyObjectBase
-from source_code.constants import BACKGROUND_COLOR
 from source_code.ui.message_window.message_window import MessageWindow
 
 
@@ -35,6 +34,8 @@ class BaseWindow(PyObjectBase):
         self.message_window = None
 
     def show_message(self, text: str) -> None:
+        if self.message_window is not None:
+            self.hide_message()
         message_rect = pygame.Rect(
             0, 0, *global_vars.ACTIVE_SCREEN.get_size())
         self.message_window = MessageWindow(text, message_rect)
@@ -43,13 +44,14 @@ class BaseWindow(PyObjectBase):
 
     def hide_message(self) -> None:
         self.message_window = None
+        # global_vars.ACTIVE_SCREEN.fill(BACKGROUND_COLOR)
+        # self.tick(global_vars.ACTIVE_SCREEN)
+        # pygame.display.flip()
 
     def file_drop(self, file_path: str) -> None:
         self.message_window.file_drop(file_path)
 
     def tick(self, screen: pygame.Surface) -> None:
-        screen.fill(BACKGROUND_COLOR)
-
         for btn in self.all_btns:
             btn.render(screen)
 

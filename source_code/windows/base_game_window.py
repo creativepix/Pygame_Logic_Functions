@@ -63,10 +63,10 @@ class BaseGameWindow(BaseWindow, BuilderBaseGameWindow):
                 connection_id += 1
 
     def tick(self, screen: pygame.Surface) -> None:
-        super().tick(screen)
         for block in self.all_blocks:
             block.render(screen)
         self.choose_block_list.render(screen)
+        super().tick(screen)
 
     @mouse_down_check_message
     def mouse_down(self, mouse_button: int) -> None:

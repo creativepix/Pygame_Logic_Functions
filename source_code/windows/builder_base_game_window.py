@@ -4,6 +4,14 @@ from abc import abstractmethod
 
 
 class BuilderBaseGameWindow:
+    def __init__(self):
+        self.all_blocks = []
+        self.all_btns = []
+        self.all_inp_fields = []
+        self.message_window = None
+        self.id_connections = {None: None}
+        self.choose_block_list = None
+
     @abstractmethod
     def update_id_connections(self) -> None:
         pass

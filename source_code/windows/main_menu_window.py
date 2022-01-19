@@ -52,9 +52,9 @@ class MainMenuWindow(BaseWindow):
 
         self.all_btns = [b1, b2, b3, b4]
 
-        super().tick(screen)
-
         font = pygame.font.Font(None, SCORE_FONT_SIZE)
         widget = font.render(f'Sum score: {self.sum_score} / {self.max_score}',
                              True, TEXT_COLOR)
         screen.blit(widget, MAIN_MENU_SCORE_RECT)
+
+        super().tick(screen)

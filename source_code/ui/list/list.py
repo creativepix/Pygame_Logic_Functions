@@ -44,6 +44,9 @@ class PyList(PyObjectBase):
         surf.fill(self.color)
         screen.blit(surf, self.rect.topleft)
 
+        if len(self.cells) == 0:
+            return
+
         starting_koof = (-self.local_var) // \
                         (SPACE_BLOCKS_IN_BLOCK_LIST + self.cells[0].size[1])
         ending_koof = (self.rect.bottom - self.rect.y - self.local_var) // \
