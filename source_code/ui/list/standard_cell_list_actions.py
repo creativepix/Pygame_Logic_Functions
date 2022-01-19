@@ -24,7 +24,8 @@ def open_entering_custom_block_name(
                 global_vars.ACTIVE_WINDOW = SandboxWindow(block_name)
 
         inp_field = PyInputField(font=pygame.font.Font(None, 25),
-                                 color=TEXT_COLOR, rect=cell_in_block_list.rect,
+                                 color=TEXT_COLOR,
+                                 rect=cell_in_block_list.rect,
                                  enter_action=open_sandbox_window,
                                  max_symbols=MAX_LEN_BLOCK_NAME)
         cell_in_block_list.text = inp_field

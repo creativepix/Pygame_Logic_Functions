@@ -72,6 +72,18 @@ class SandboxWindow(BaseGameWindow):
 
         def save_pic_action():
             def dropped_action(path: str):
+                con_now = sqlite3.connect(
+                    './source_code/block_scheme/data/blocks.db')
+                cur_now = con_now.cursor()
+
+                now_img = cur_now.execute(f'SELECT IMAGE_PATH '
+                                          f'FROM ALL_CUSTOM_BLOCKS '
+                                          f'WHERE BLOCK_NAME = '
+                                          f'"{self.editing_block_name}"').\
+                    fetchall()
+                if any(now_img) and any(now_img[0][0]):
+                    os.remove(now_img[0][0])
+
                 all_imgs = os.listdir(CUSTOM_BLOCK_IMAGES_PATH)
                 randing = random.randint(0, 10 ** 10)
                 new_path = f'{CUSTOM_BLOCK_IMAGES_PATH}/' \
@@ -81,9 +93,7 @@ class SandboxWindow(BaseGameWindow):
                     new_path = f'{CUSTOM_BLOCK_IMAGES_PATH}/' \
                                f'{randing}{path[path.rindex("."):]}'
                 shutil.copy2(path, new_path)
-                con_now = sqlite3.connect(
-                    './source_code/block_scheme/data/blocks.db')
-                cur_now = con_now.cursor()
+
                 cur_now.execute(f'UPDATE ALL_CUSTOM_BLOCKS SET IMAGE_PATH = '
                                 f'"{new_path}" WHERE BLOCK_NAME = '
                                 f'"{self.editing_block_name}"')
