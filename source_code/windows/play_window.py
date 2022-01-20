@@ -18,6 +18,8 @@ from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
     BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH,\
     STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, BLOCK_SIZE_IN_BLOCK_LIST, \
     DESCRIPTION_BTN_RECT
+from source_code.middlewares.screen_ration import get_current_rect_ration, \
+    get_current_vertical_ration
 from source_code.middlewares.splitting_line import split_line
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -96,7 +98,8 @@ class PlayWindow(BaseGameWindow):
                                   action=self.check_solution_action)
         self.description_btn = PyButton(text='Description', color=TEXT_COLOR,
                                         font=pygame.font.Font(None, 25),
-                                        rect=DESCRIPTION_BTN_RECT,
+                                        rect=get_current_rect_ration(
+                                            DESCRIPTION_BTN_RECT),
                                         action=self.show_description_action)
 
         self.all_btns = [self.save_btn, self.back_btn, self.check_btn,
@@ -214,12 +217,19 @@ class PlayWindow(BaseGameWindow):
                 outputs_lists.append(
                     CellInList('\n'.join(txt), size=cell_size, font=font))
 
-        result_lists = [PyList(inputs_lists, INPUTS_RESULT_TABLE_RECT, 0,
+        inputs_rect = INPUTS_RESULT_TABLE_RECT
+        needed_outputs_rect = NEEDED_OUTPUTS_RESULT_TABLE_RECT
+        outputs_rect = OUTPUTS_RESULT_TABLE_RECT
+        inputs_rect.h = get_current_vertical_ration(inputs_rect.h)
+        needed_outputs_rect.h = get_current_vertical_ration(
+            needed_outputs_rect.h)
+        outputs_rect.h = get_current_vertical_ration(outputs_rect.h)
+
+        result_lists = [PyList(inputs_lists, inputs_rect, 0,
                                color=(0, 0, 0, 0)),
-                        PyList(needed_outputs_lists,
-                               NEEDED_OUTPUTS_RESULT_TABLE_RECT, 0,
+                        PyList(needed_outputs_lists, needed_outputs_rect, 0,
                                color=(0, 0, 0, 0)),
-                        PyList(outputs_lists, OUTPUTS_RESULT_TABLE_RECT, 0,
+                        PyList(outputs_lists, outputs_rect, 0,
                                color=(0, 0, 0, 0))]
         self.table_results = PyTable(
             result_lists, ['    inputs', '  outputs', 'your outputs'],
@@ -250,11 +260,11 @@ class PlayWindow(BaseGameWindow):
         widget = font.render(
             f'Last score: {self.last_score} / {self.max_score}', True,
             TEXT_COLOR)
-        screen.blit(widget, SCORE_GAME_RECT)
+        screen.blit(widget, get_current_rect_ration(SCORE_GAME_RECT))
         widget = font.render(
             f'Best score: {self.best_score} / {self.max_score}', True,
             TEXT_COLOR)
-        screen.blit(widget, BEST_GAME_SCORE_RECT)
+        screen.blit(widget, get_current_rect_ration(BEST_GAME_SCORE_RECT))
 
         super().tick(screen)
 

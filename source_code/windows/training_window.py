@@ -5,9 +5,9 @@ from source_code.block_scheme.blocks.not_block import NotBlock
 from source_code.block_scheme.blocks.output_block import OutputBlock
 from source_code.constants import TRAINING_INSTRUCTIONS, \
     TRAINING_STARTING_DRAWING_STAGE, TRAINING_UPPER_TEXT_SIZE, \
-    TRAINING_UPPER_TEXT_RECT, TRAINING_UPPER_TEXT_MAX_SYMBOLS, \
-    TRAINING_TEXT_LINES_INDENT, TRAINING_ARROW_SIZE, SCORE_GAME_RECT, \
-    TRAINING_TEXT_COLOR
+    TRAINING_UPPER_TEXT_MAX_SYMBOLS, TRAINING_TEXT_LINES_INDENT, \
+    TRAINING_ARROW_SIZE, SCORE_GAME_RECT, TRAINING_TEXT_COLOR, \
+    TRAINING_TEXT_LINES_HEIGHT
 from source_code.middlewares.splitting_line import split_line
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -20,7 +20,6 @@ from source_code.windows.play_window import PlayWindow
 class TrainingWindow(PlayWindow):
     def __init__(self):
         super().__init__(0)
-        self.now_instruction = TRAINING_INSTRUCTIONS[0]
         self._stage = 0
         self.training_arrow = TrainingArrow(self.stage)
 
@@ -94,13 +93,16 @@ class TrainingWindow(PlayWindow):
                 self.stage += 1
 
     def tick(self, screen: pygame.Surface) -> None:
-        rect = TRAINING_UPPER_TEXT_RECT.copy()
+        rect = screen.get_rect().copy()
+        rect.h = TRAINING_TEXT_LINES_HEIGHT
         for line in split_line(TRAINING_INSTRUCTIONS[self.stage],
                                TRAINING_UPPER_TEXT_MAX_SYMBOLS):
+            rect.y += TRAINING_TEXT_LINES_INDENT
             widget = pygame.font.Font(None, TRAINING_UPPER_TEXT_SIZE).render(
                 line, True, TRAINING_TEXT_COLOR)
-            screen.blit(widget, rect)
-            rect.y += TRAINING_TEXT_LINES_INDENT
+            font_rect = widget.get_rect()
+            font_rect.center = (rect.w // 2, font_rect.h // 2 + rect.y)
+            screen.blit(widget, font_rect)
 
         def arrow_to_block_class(block_class: Type):
             nonlocal rect, rotating

@@ -22,14 +22,21 @@ class MessageWindow(PyObjectBase):
         surf.set_alpha(MESSAGE_WINDOW_ALPHA)
         screen.blit(surf, self.rect)
 
-        r = range(-MESSAGE_WINDOW_TEXT_LINES_INDENT *
-                  (len(self.text_lines) // 2),
-                  MESSAGE_WINDOW_TEXT_LINES_INDENT *
-                  (len(self.text_lines) // 2),
-                  MESSAGE_WINDOW_TEXT_LINES_INDENT)
-        indents = list(r)
-        if len(self.text_lines) % 2 != 0:
-            indents.insert(len(self.text_lines) // 2, 0)
+        if len(self.text_lines) > 1:
+            if len(self.text_lines) % 2 == 0:
+                plus = MESSAGE_WINDOW_TEXT_LINES_INDENT // 2
+            else:
+                plus = 0
+            r = range(-MESSAGE_WINDOW_TEXT_LINES_INDENT *
+                      (len(self.text_lines) // 2) + plus,
+                      MESSAGE_WINDOW_TEXT_LINES_INDENT *
+                      (len(self.text_lines) // 2),
+                      MESSAGE_WINDOW_TEXT_LINES_INDENT)
+            indents = list(r)
+            if len(self.text_lines) % 2 != 0:
+                indents.append(indents[-1] + MESSAGE_WINDOW_TEXT_LINES_INDENT)
+        else:
+            indents = [0]
         for i, line in enumerate(self.text_lines):
             widget = pygame.font.Font(None, 50).render(
                 line, True, MESSAGE_WINDOW_TEXT_COLOR)

@@ -1,3 +1,4 @@
+from source_code import global_vars
 from source_code.block_scheme.connections.base_connection import BaseConnection
 from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
@@ -11,9 +12,25 @@ class OutputConnection(BaseConnection):
         if isinstance(to_connection, InputConnection):
             for attached_connection in to_connection.attached_connections:
                 to_connection.detach(attached_connection)
+
+            my_inputs = self.parent_block.inputs
+
+            def check_outputs(connection: BaseConnection):
+                for con in connection.parent_block.outputs:
+                    for attached_con in con.attached_connections:
+                        if attached_con in my_inputs or \
+                                check_outputs(attached_con):
+                            return True
+                return False
+
+            if check_outputs(to_connection):
+                global_vars.ACTIVE_WINDOW.show_message(
+                    'Do you want to make a max recursion error?')
+                return
+
+            to_connection.signal = self.signal
             self.attached_connections.append(to_connection)
             to_connection.attached_connections.append(self)
-            to_connection.signal = self.signal
 
     def detach(self, connection: BuilderBaseConnection) -> None:
         super().detach(connection)

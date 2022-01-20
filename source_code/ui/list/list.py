@@ -20,7 +20,7 @@ class PyList(PyObjectBase):
         self.color = color
         self.local_var = 10
         self.orientation = orientation
-        self.rect: pygame.Rect = rect
+        self.rect: pygame.Rect = rect.copy()
 
         self._cells = cells
         # len_cells нужна для оптимизации, чтобы python в методе tick постоянно

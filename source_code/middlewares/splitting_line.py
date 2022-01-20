@@ -1,4 +1,5 @@
 def split_line(line: str, max_symbols: int):
+    line += ' '
     new_lines = [[]]
     for i, elem in enumerate(line):
         new_lines[-1].append(elem)
@@ -19,4 +20,4 @@ def split_line(line: str, max_symbols: int):
             new_lines[-1] = ''.join(new_lines[-1])
     if not any(new_lines[-1]):
         del new_lines[-1]
-    return new_lines
+    return list(filter(lambda x: any(x.strip()), new_lines))

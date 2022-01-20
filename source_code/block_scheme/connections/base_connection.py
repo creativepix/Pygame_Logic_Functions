@@ -1,5 +1,7 @@
 import pygame
 from typing import Tuple
+
+from source_code import global_vars
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 from source_code.block_scheme.blocks.builder_base_block import BuilderBaseBlock
 from source_code.block_scheme.connections.builder_base_connection import \
@@ -73,9 +75,9 @@ class BaseConnection(BuilderBaseConnection):
         return self.get_rect().collidepoint(pygame.mouse.get_pos())
 
     def attach(self, to_connection: BuilderBaseConnection) -> None:
+        to_connection.signal = self.signal
         self.attached_connections.append(to_connection)
         to_connection.attached_connections.append(self)
-        to_connection.signal = self.signal
 
     def detach(self, connection: BuilderBaseConnection) -> None:
         if self in connection.attached_connections:

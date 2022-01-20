@@ -1,14 +1,15 @@
 import pygame
 from typing import Callable, Union, Tuple
 from source_code.constants import BLOCKS_WIDTH, SPACE_BLOCKS_IN_BLOCK_LIST, \
-    BASE_CELL_IN_BLOCK_SIZE, TEXT_COLOR, LIST_CELLS_COLOR
+    BASE_CELL_IN_BLOCK_SIZE, TEXT_COLOR, LIST_CELLS_COLOR, \
+    PREPLAY_TEXT_LINES_INDENT
 
 
 class CellInList:
     """Ячейка в списке"""
     def __init__(self, text: Union[str, Callable[[], str]],
                  action: Callable = lambda: None, size: Tuple[int, int] = None,
-                 font: pygame.font.Font = pygame.font.Font(None, 20),
+                 font: pygame.font.Font = pygame.font.Font(None, 25),
                  img: Union[pygame.Surface, str] = None,
                  text_color: Tuple[int, int, int] = TEXT_COLOR):
         if size is not None:
@@ -75,16 +76,27 @@ class CellInList:
                     self.text if isinstance(self.text, str) else
                     self.text(), True, self.text_color)]
             rect = self.rect.copy()
-            y_indent = 0
-            for widget in widgets:
-                font_rect = widget.get_rect()
-                if len(widgets) > 1:
-                    font_rect.center = (rect.w // 2, font_rect.h)
+
+            if len(widgets) > 1:
+                if len(widgets) % 2 == 0:
+                    plus = PREPLAY_TEXT_LINES_INDENT // 2
                 else:
-                    font_rect.center = (rect.w // 2, rect.h // 2)
-                font_rect.y += y_indent
+                    plus = 0
+                r = range(-PREPLAY_TEXT_LINES_INDENT *
+                          (len(widgets) // 2) + plus,
+                          PREPLAY_TEXT_LINES_INDENT *
+                          (len(widgets) // 2),
+                          PREPLAY_TEXT_LINES_INDENT)
+                indents = list(r)
+                if len(widgets) % 2 != 0:
+                    indents.append(indents[-1] + PREPLAY_TEXT_LINES_INDENT)
+            else:
+                indents = [0]
+            for i, widget in enumerate(widgets):
+                font_rect = widget.get_rect()
+                font_rect.center = (rect.w // 2, rect.h // 2)
+                font_rect.y += indents[i]
                 surf.blit(widget, font_rect)
-                y_indent += font_rect.h
             pygame.draw.rect(
                 surf, LIST_CELLS_COLOR, (0, 0, rect.w, rect.h),
                 width=BLOCKS_WIDTH)
