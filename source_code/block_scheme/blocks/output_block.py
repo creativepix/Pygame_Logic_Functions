@@ -3,16 +3,18 @@ from source_code.block_scheme.blocks.base_block import BaseBlock
 from source_code.block_scheme.connections.input_connection import \
     InputConnection
 from source_code.constants import BLOCK_TEXT_MIN_SIZE, BLOCK_ID_BASE_COORDS, \
-    BLOCKS_NAME_COLOR
+    BLOCKS_NAME_COLOR, BASE_BLOCK_IMAGES_PATH
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
 class OutputBlock(BaseBlock):
     def __init__(self, base_game_window: BuilderBaseGameWindow,
                  rect: pygame.rect.Rect, output_id: int = None):
+        img_path = f'{BASE_BLOCK_IMAGES_PATH}/out.png'
         super().__init__(
             base_game_window, 'output', rect, lambda inputs: [],
-            [InputConnection(base_game_window, self, (100 // 2, 100))], [])
+            [InputConnection(base_game_window, self, (100 // 2, 100))], [],
+            img=img_path)
         self.output_id = output_id
 
     def render(self, screen: pygame.Surface) -> None:

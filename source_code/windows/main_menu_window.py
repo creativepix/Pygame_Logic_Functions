@@ -1,10 +1,12 @@
 import pygame
 import sqlite3
+
+from source_code import global_vars
 from source_code.middlewares.window_transition_actions import quit_action, \
     start_training_action, start_presandbox_action, start_preplay_action
 from source_code.ui.button import PyButton
-from source_code.constants import START_MENU_SIZE, TEXT_COLOR, \
-    SCORE_FONT_SIZE, MAIN_MENU_SCORE_RECT
+from source_code.constants import TEXT_COLOR, SCORE_FONT_SIZE, \
+    MAIN_MENU_SCORE_RECT
 from source_code.windows.base_window import BaseWindow
 
 
@@ -29,25 +31,26 @@ class MainMenuWindow(BaseWindow):
         text_w, text_h = 200, 70
         otstyp = 150
 
+        menu_size = global_vars.ACTIVE_SCREEN.get_size()
         b1 = PyButton(text='Play', font=pygame.font.Font(None, 50),
                       color=TEXT_COLOR, rect=pygame.Rect(
-                START_MENU_SIZE[0] // 2 - text_w // 2,
-                START_MENU_SIZE[1] // 2 - text_h // 2 - otstyp // 1.35,
+                menu_size[0] // 2 - text_w // 2,
+                menu_size[1] // 2 - text_h // 2 - otstyp // 1.35,
                 text_w, text_h), action=start_preplay_action)
         b2 = PyButton(text='Sandbox', font=pygame.font.Font(None, 50),
                       color=TEXT_COLOR, rect=pygame.Rect(
-                START_MENU_SIZE[0] // 2 - text_w // 2,
-                START_MENU_SIZE[1] // 2 - text_h // 2 - otstyp // 4,
+                menu_size[0] // 2 - text_w // 2,
+                menu_size[1] // 2 - text_h // 2 - otstyp // 4,
                 text_w, text_h), action=start_presandbox_action)
         b3 = PyButton(text='Training', font=pygame.font.Font(None, 50),
                       color=TEXT_COLOR, rect=pygame.Rect(
-                START_MENU_SIZE[0] // 2 - text_w // 2,
-                START_MENU_SIZE[1] // 2 - text_h // 2 + otstyp // 4,
+                menu_size[0] // 2 - text_w // 2,
+                menu_size[1] // 2 - text_h // 2 + otstyp // 4,
                 text_w, text_h), action=start_training_action)
         b4 = PyButton(text='Exit', font=pygame.font.Font(None, 50),
                       color=TEXT_COLOR, rect=pygame.Rect(
-                START_MENU_SIZE[0] // 2 - text_w // 2,
-                START_MENU_SIZE[1] // 2 - text_h // 2 + otstyp // 1.35,
+                menu_size[0] // 2 - text_w // 2,
+                menu_size[1] // 2 - text_h // 2 + otstyp // 1.35,
                 text_w, text_h), action=quit_action)
 
         self.all_btns = [b1, b2, b3, b4]
