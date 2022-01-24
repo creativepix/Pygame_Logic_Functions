@@ -1,7 +1,10 @@
 import pygame
+import pygame_gui
 from source_code import global_vars
+from source_code.ui.message_window.drop_file_window import DropFileWindow
 from source_code.windows.main_menu_window import MainMenuWindow
 from source_code.constants import BACKGROUND_COLOR, START_MENU_SIZE, FPS
+from pygame_gui.core.utility import create_resource_path
 
 
 def start():
@@ -13,6 +16,8 @@ def start():
     global_vars.ACTIVE_SCREEN = screen
     # Активное окно
     global_vars.ACTIVE_WINDOW = MainMenuWindow()
+
+    global_vars.UI_MANAGER = pygame_gui.UIManager(screen.get_size())
 
     timer_db_click = 0
     is_db_downed = False
@@ -29,7 +34,9 @@ def start():
                 global_vars.RUNNING = False
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Активному окну - событие
-                global_vars.ACTIVE_WINDOW.mouse_down(event.button)
+                if not isinstance(global_vars.ACTIVE_WINDOW.message_window,
+                                  DropFileWindow):
+                    global_vars.ACTIVE_WINDOW.mouse_down(event.button)
                 # Фазы двойного клика
                 if event.button == 1:
                     if timer_db_click == 0:
@@ -54,6 +61,16 @@ def start():
                 global_vars.ACTIVE_WINDOW.text_input(event.text)
             elif event.type == pygame.DROPFILE:
                 global_vars.ACTIVE_WINDOW.file_drop(event.file)
+            if event.type == pygame_gui.UI_FILE_DIALOG_PATH_PICKED and \
+                    isinstance(global_vars.ACTIVE_WINDOW.message_window,
+                               DropFileWindow):
+                global_vars.ACTIVE_WINDOW.file_drop(
+                    create_resource_path(event.text))
+            if event.type == pygame_gui.UI_WINDOW_CLOSE and \
+                    isinstance(global_vars.ACTIVE_WINDOW.message_window,
+                               DropFileWindow):
+                global_vars.ACTIVE_WINDOW.mouse_down(1)
+            global_vars.UI_MANAGER.process_events(event)
         if not global_vars.RUNNING:
             break
 
@@ -65,6 +82,9 @@ def start():
             if timer_db_click >= 0.5:
                 timer_db_click = 0
                 is_db_downed = False
+
+        global_vars.UI_MANAGER.update(dt)
+        global_vars.UI_MANAGER.draw_ui(screen)
 
         pygame.display.flip()
     pygame.quit()

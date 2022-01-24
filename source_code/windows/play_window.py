@@ -212,14 +212,14 @@ class PlayWindow(BaseGameWindow):
                 txt = split_line(''.join(needed_outputs), RESULTS_MAX_SYMBOLS)
                 needed_outputs_lists.append(
                     CellInList('\n'.join(txt), size=cell_size, font=font))
-                txt = split_line(('+' if i == 1 else '-') +
-                                 ''.join(outputs), RESULTS_MAX_SYMBOLS)
+                txt = split_line(''.join(outputs), RESULTS_MAX_SYMBOLS)
+                txt[0] = ('+' if i == 1 else '-') + txt[0]
                 outputs_lists.append(
                     CellInList('\n'.join(txt), size=cell_size, font=font))
 
-        inputs_rect = INPUTS_RESULT_TABLE_RECT
-        needed_outputs_rect = NEEDED_OUTPUTS_RESULT_TABLE_RECT
-        outputs_rect = OUTPUTS_RESULT_TABLE_RECT
+        inputs_rect = INPUTS_RESULT_TABLE_RECT.copy()
+        needed_outputs_rect = NEEDED_OUTPUTS_RESULT_TABLE_RECT.copy()
+        outputs_rect = OUTPUTS_RESULT_TABLE_RECT.copy()
         inputs_rect.h = get_current_vertical_ration(inputs_rect.h)
         needed_outputs_rect.h = get_current_vertical_ration(
             needed_outputs_rect.h)

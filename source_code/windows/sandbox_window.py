@@ -100,7 +100,7 @@ class SandboxWindow(BaseGameWindow):
                 con_now.commit()
                 con_now.close()
 
-            args = ('Drop me picture', 'Picture is saved',
+            args = ('Choose picture', 'Picture is saved',
                     global_vars.ACTIVE_SCREEN.get_rect(),
                     ['png', 'bmp', 'jpg', 'jpeg'],
                     dropped_action)

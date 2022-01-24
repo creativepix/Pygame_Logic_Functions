@@ -23,7 +23,7 @@ class PreplayWindow(BaseWindow):
         cur = con.cursor()
         all_levels = cur.execute(
             f"SELECT ID, NAME, DESCRIPTION, BEST_SCORE, MAX_SCORE "
-            f"FROM ALL_LEVELS WHERE ID > 0").fetchall()
+            f"FROM ALL_LEVELS WHERE ID > 0 ORDER BY ID").fetchall()
 
         names_cells, descriptions_cells, scores_cells, play_btns_cells = \
             [], [], [], []
@@ -56,7 +56,6 @@ class PreplayWindow(BaseWindow):
                            150, get_current_horizontal_ration(200),
                            ACTIVE_SCREEN.get_height() - 150)
         names = PyList(names_cells, rect, 0, (0, 0, 0, 0))
-        print(rect.x)
         rect = pygame.Rect(rect.x + rect.w, 150,
                            get_current_horizontal_ration(775),
                            ACTIVE_SCREEN.get_height() - 150)

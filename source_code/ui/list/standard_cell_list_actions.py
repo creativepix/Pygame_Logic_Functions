@@ -1,3 +1,5 @@
+import os
+
 import pygame
 import sqlite3
 from typing import Callable
@@ -59,6 +61,12 @@ def delete_custom_block_row(del_cell_in_list: CellInList, pytable: PyTable,
         block_name = pytable.pylists[block_list_id].cells[py_row_id].text
         for pylist in pytable.pylists:
             del pylist.cells[py_row_id]
+
+        img = cur.execute(f'SELECT IMAGE_PATH FROM ALL_CUSTOM_BLOCKS '
+                          f'WHERE BLOCK_NAME="{block_name}"').fetchall()
+        if any(img) and any(img[0]):
+            img = img[0][0]
+            os.remove(img)
 
         cur.execute(f'DELETE FROM ALL_CUSTOM_BLOCKS '
                     f'WHERE BLOCK_NAME="{block_name}"')
