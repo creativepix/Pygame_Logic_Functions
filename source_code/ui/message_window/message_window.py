@@ -4,7 +4,7 @@ from source_code.middlewares.splitting_line import split_line
 from source_code.py_base import PyObjectBase
 from source_code.constants import MESSAGE_WINDOW_TEXT_COLOR, \
     MESSAGE_WINDOW_TEXT_LINES_INDENT, MESSAGE_WINDOW_TEXT_MAX_SYMBOLS, \
-    MESSAGE_WINDOW_ALPHA
+    MESSAGE_WINDOW_ALPHA, FONT_NAME
 
 
 class MessageWindow(PyObjectBase):
@@ -38,7 +38,7 @@ class MessageWindow(PyObjectBase):
         else:
             indents = [0]
         for i, line in enumerate(self.text_lines):
-            widget = pygame.font.Font(None, 50).render(
+            widget = pygame.font.Font(FONT_NAME, 50).render(
                 line, True, MESSAGE_WINDOW_TEXT_COLOR)
             font_rect = widget.get_rect()
             font_rect.center = self.rect.center

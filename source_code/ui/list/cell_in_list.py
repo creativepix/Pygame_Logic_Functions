@@ -2,14 +2,14 @@ import pygame
 from typing import Callable, Union, Tuple
 from source_code.constants import BLOCKS_WIDTH, SPACE_BLOCKS_IN_BLOCK_LIST, \
     BASE_CELL_IN_BLOCK_SIZE, TEXT_COLOR, LIST_CELLS_COLOR, \
-    PREPLAY_TEXT_LINES_INDENT
+    PREPLAY_TEXT_LINES_INDENT, FONT_NAME
 
 
 class CellInList:
     """Ячейка в списке"""
     def __init__(self, text: Union[str, Callable[[], str]],
                  action: Callable = lambda: None, size: Tuple[int, int] = None,
-                 font: pygame.font.Font = pygame.font.Font(None, 25),
+                 font: pygame.font.Font = pygame.font.Font(FONT_NAME, 25),
                  img: Union[pygame.Surface, str] = None,
                  text_color: Tuple[int, int, int] = TEXT_COLOR):
         if size is not None:

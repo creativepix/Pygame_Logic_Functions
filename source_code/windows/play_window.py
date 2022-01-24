@@ -15,9 +15,9 @@ from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, CHECK_SOLUTION_BTN_RECT, INPUTS_RESULT_TABLE_RECT, \
     NEEDED_OUTPUTS_RESULT_TABLE_RECT, OUTPUTS_RESULT_TABLE_RECT, \
     RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, SCORE_GAME_RECT, \
-    BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH,\
+    BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH, \
     STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, BLOCK_SIZE_IN_BLOCK_LIST, \
-    DESCRIPTION_BTN_RECT
+    DESCRIPTION_BTN_RECT, FONT_NAME
 from source_code.middlewares.screen_ration import get_current_rect_ration, \
     get_current_vertical_ration
 from source_code.middlewares.splitting_line import split_line
@@ -86,18 +86,18 @@ class PlayWindow(BaseGameWindow):
         super().__init__(all_listblocks)
         self.show_message('Initializing level...')
 
-        self.save_btn = PyButton(text='Save', font=pygame.font.Font(None, 25),
+        self.save_btn = PyButton(text='Save', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=SAVE_BTN_RECT,
                                  action=self.save_action)
-        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
                                  action=to_main_menu_action)
         self.check_btn = PyButton(text='Check', color=TEXT_COLOR,
-                                  font=pygame.font.Font(None, 25),
+                                  font=pygame.font.Font(FONT_NAME, 25),
                                   rect=CHECK_SOLUTION_BTN_RECT,
                                   action=self.check_solution_action)
         self.description_btn = PyButton(text='Description', color=TEXT_COLOR,
-                                        font=pygame.font.Font(None, 25),
+                                        font=pygame.font.Font(FONT_NAME, 25),
                                         rect=get_current_rect_ration(
                                             DESCRIPTION_BTN_RECT),
                                         action=self.show_description_action)
@@ -190,7 +190,7 @@ class PlayWindow(BaseGameWindow):
         con.close()
 
     def make_table_results(self, results: Dict):
-        font = pygame.font.Font(None, RESULTS_FONT_SIZE)
+        font = pygame.font.Font(FONT_NAME, RESULTS_FONT_SIZE)
         max_rows = max(
             math.ceil(len(list(results.keys())[0]) / RESULTS_MAX_SYMBOLS),
             math.ceil(len(list(results.values())[0][0]) / RESULTS_MAX_SYMBOLS),
@@ -256,7 +256,7 @@ class PlayWindow(BaseGameWindow):
     def tick(self, screen: pygame.Surface) -> None:
         self.table_results.render(screen)
 
-        font = pygame.font.Font(None, SCORE_FONT_SIZE)
+        font = pygame.font.Font(FONT_NAME, SCORE_FONT_SIZE)
         widget = font.render(
             f'Last score: {self.last_score} / {self.max_score}', True,
             TEXT_COLOR)

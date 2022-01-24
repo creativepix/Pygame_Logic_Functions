@@ -15,7 +15,7 @@ from source_code.block_scheme.data.structure_cmds import \
     custom_block_in_structure
 from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
     BACK_BTN_RECT, SAVE_PIC_BTN_RECT, BLOCK_SIZE_IN_BLOCK_LIST, \
-    CUSTOM_BLOCK_IMAGES_PATH
+    CUSTOM_BLOCK_IMAGES_PATH, FONT_NAME
 from source_code.errors.no_output_block_error import NoOutputBlockError
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -106,14 +106,14 @@ class SandboxWindow(BaseGameWindow):
                     dropped_action)
             self.message_window = DropFileWindow(*args)
 
-        self.save_btn = PyButton(text='Save', font=pygame.font.Font(None, 25),
+        self.save_btn = PyButton(text='Save', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=SAVE_BTN_RECT,
                                  action=self.save_action)
         self.save_pic_btn = PyButton(text='Load Picture',
-                                     font=pygame.font.Font(None, 25),
+                                     font=pygame.font.Font(FONT_NAME, 25),
                                      color=TEXT_COLOR, rect=SAVE_PIC_BTN_RECT,
                                      action=save_pic_action)
-        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
                                  action=to_main_menu_action)
 

@@ -7,7 +7,8 @@ from source_code.constants import TRAINING_INSTRUCTIONS, \
     TRAINING_STARTING_DRAWING_STAGE, TRAINING_UPPER_TEXT_SIZE, \
     TRAINING_UPPER_TEXT_MAX_SYMBOLS, TRAINING_TEXT_LINES_INDENT, \
     TRAINING_ARROW_SIZE, SCORE_GAME_RECT, TRAINING_TEXT_COLOR, \
-    TRAINING_TEXT_LINES_HEIGHT
+    TRAINING_TEXT_LINES_HEIGHT, FONT_NAME
+from source_code.middlewares.screen_ration import get_current_rect_ration
 from source_code.middlewares.splitting_line import split_line
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -98,7 +99,7 @@ class TrainingWindow(PlayWindow):
         for line in split_line(TRAINING_INSTRUCTIONS[self.stage],
                                TRAINING_UPPER_TEXT_MAX_SYMBOLS):
             rect.y += TRAINING_TEXT_LINES_INDENT
-            widget = pygame.font.Font(None, TRAINING_UPPER_TEXT_SIZE).render(
+            widget = pygame.font.Font(FONT_NAME, TRAINING_UPPER_TEXT_SIZE).render(
                 line, True, TRAINING_TEXT_COLOR)
             font_rect = widget.get_rect()
             font_rect.center = (rect.w // 2, font_rect.h // 2 + rect.y)
@@ -138,10 +139,10 @@ class TrainingWindow(PlayWindow):
             rotating = 180
         elif self.stage == 15:
             rect = self.table_results.rect.copy()
-            rect.x += rect.w
+            rect.x += rect.w * 1.2
             rotating = 180
         elif self.stage == 16:
-            rect = SCORE_GAME_RECT.copy()
+            rect = get_current_rect_ration(SCORE_GAME_RECT).copy()
             rect.x += rect.w
             rotating = 180
         if self.stage in [3, 4, 5, 10, 12, 14, 15, 16] and rect is not None:

@@ -6,7 +6,7 @@ from source_code.block_scheme.connections.builder_base_connection import \
     BuilderBaseConnection
 from source_code.constants import BLOCKS_COLOR, BLOCKS_NAME_COLOR, \
     BLOCKS_INDENT_FOR_RESIZING, BLOCKS_WIDTH, BLOCK_MIN_SIZE, \
-    BLOCK_TEXT_MAX_SIZE, BLOCK_TEXT_MIN_SIZE
+    BLOCK_TEXT_MAX_SIZE, BLOCK_TEXT_MIN_SIZE, FONT_NAME
 from source_code.windows.builder_base_game_window import BuilderBaseGameWindow
 
 
@@ -23,9 +23,7 @@ class BaseBlock(BuilderBaseBlock):
         self.update_output_signals()
 
     def zoom(self, koof: int) -> None:
-        new_size_koof = min(max(self.size_koof + koof, 0),
-                            math.log(BLOCK_TEXT_MAX_SIZE //
-                                     BLOCK_TEXT_MIN_SIZE, 2))
+        new_size_koof = min(max(self.size_koof + koof, 0), int(math.log(BLOCK_TEXT_MAX_SIZE // BLOCK_TEXT_MIN_SIZE, 2)))
         if new_size_koof == self.size_koof + koof:
             self.size_koof += koof
             self.rect.x *= 2 ** koof
@@ -41,7 +39,7 @@ class BaseBlock(BuilderBaseBlock):
 
     def resize(self, w_dif: int, h_dif: int) -> None:
         dif = (w_dif + h_dif) // 2
-        if not ((self.rect.w + dif >= BLOCK_MIN_SIZE[0] or dif >= 0) and\
+        if not ((self.rect.w + dif >= BLOCK_MIN_SIZE[0] or dif >= 0) and
                 (self.rect.h + dif >= BLOCK_MIN_SIZE[1] or dif >= 0)):
             return
         self.rect.w = max(BLOCK_MIN_SIZE[0], self.rect.w + dif)
@@ -52,7 +50,7 @@ class BaseBlock(BuilderBaseBlock):
             pygame.draw.rect(screen, BLOCKS_COLOR, self.rect,
                              width=BLOCKS_WIDTH)
 
-            font = pygame.font.Font(None, BLOCK_TEXT_MIN_SIZE *
+            font = pygame.font.Font(FONT_NAME, BLOCK_TEXT_MIN_SIZE *
                                     (2 ** self.size_koof))
             widget = font.render(self.name, True, BLOCKS_NAME_COLOR)
             font_rect = widget.get_rect()

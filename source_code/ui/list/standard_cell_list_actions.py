@@ -1,5 +1,4 @@
 import os
-
 import pygame
 import sqlite3
 from typing import Callable
@@ -10,7 +9,7 @@ from source_code.windows.base_window import BaseWindow
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.windows.sandbox_window import SandboxWindow
 from source_code.constants import TEXT_COLOR, MAX_LEN_BLOCK_NAME, \
-    NOT_EDITABLE_BLOCKS
+    NOT_EDITABLE_BLOCKS, BLOCK_LIST_BLOCKS_TEXT_SIZE, FONT_NAME
 
 
 def open_entering_custom_block_name(
@@ -25,7 +24,7 @@ def open_entering_custom_block_name(
             elif any(block_name):
                 global_vars.ACTIVE_WINDOW = SandboxWindow(block_name)
 
-        inp_field = PyInputField(font=pygame.font.Font(None, 25),
+        inp_field = PyInputField(font=pygame.font.Font(FONT_NAME, BLOCK_LIST_BLOCKS_TEXT_SIZE),
                                  color=TEXT_COLOR,
                                  rect=cell_in_block_list.rect,
                                  enter_action=open_sandbox_window,

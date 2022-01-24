@@ -1,7 +1,7 @@
 import pygame
 import sqlite3
 from source_code.constants import BLOCK_SIZE_IN_BLOCK_LIST, TEXT_COLOR, \
-    TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT, NOT_EDITABLE_BLOCKS
+    TABLE_X_SYMBOL_SIZE, BACK_BTN_RECT, NOT_EDITABLE_BLOCKS, BLOCK_LIST_BLOCKS_TEXT_SIZE, FONT_NAME
 from source_code.global_vars import ACTIVE_SCREEN
 from source_code.middlewares.window_transition_actions import \
     to_main_menu_action
@@ -33,13 +33,13 @@ class PresandboxWindow(BaseWindow):
         for custom_block in all_custom_blocks:
             cell_in_list = CellInList(
                 custom_block[0], choose_for_edit_block(custom_block[0]),
-                img=custom_block[2])
+                img=custom_block[2], font=pygame.font.Font(FONT_NAME, BLOCK_LIST_BLOCKS_TEXT_SIZE))
             cells_in_list.append(cell_in_list)
 
             cell_in_list = CellInList('x', size=TABLE_X_SYMBOL_SIZE)
             del_cells_in_list.append(cell_in_list)
 
-        adding_cell_in_block_list = CellInList('+')
+        adding_cell_in_block_list = CellInList('+', font=pygame.font.Font(FONT_NAME, BLOCK_LIST_BLOCKS_TEXT_SIZE))
         adding_cell_in_block_list.action = open_entering_custom_block_name(
             self, adding_cell_in_block_list)
         cells_in_list.append(adding_cell_in_block_list)
@@ -55,7 +55,7 @@ class PresandboxWindow(BaseWindow):
             del_cell_in_list.action = delete_custom_block_row(
                 del_cell_in_list, self.choose_edit_block_table, 0)
 
-        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
                                  action=to_main_menu_action)
         self.all_btns.append(self.back_btn)
@@ -64,7 +64,7 @@ class PresandboxWindow(BaseWindow):
 
     def tick(self, screen: pygame.Surface) -> None:
         self.choose_edit_block_table.render(screen)
-        font = pygame.font.Font(None, 75)
+        font = pygame.font.Font(FONT_NAME, 75)
         for i, line in enumerate(['Выберите блок',
                                   'для редактирования'], start=1):
             widget = font.render(line, True, TEXT_COLOR)

@@ -10,7 +10,7 @@ from source_code.global_vars import ACTIVE_SCREEN
 from source_code.windows.play_window import PlayWindow
 from source_code.ui.list.cell_in_list import CellInList
 from source_code.constants import TEXT_COLOR, PREPLAY_LEVEL_HEIGHT, \
-    BACK_BTN_RECT, PREPLAY_MAX_SYMBOLS_DESCRIPTION, PREPLAY_MAX_SYMBOLS_NAMES
+    BACK_BTN_RECT, PREPLAY_MAX_SYMBOLS_DESCRIPTION, PREPLAY_MAX_SYMBOLS_NAMES, FONT_NAME
 from source_code.windows.base_window import BaseWindow, disable_if_message
 
 
@@ -75,7 +75,7 @@ class PreplayWindow(BaseWindow):
             from source_code.windows.main_menu_window import MainMenuWindow
             global_vars.ACTIVE_WINDOW = MainMenuWindow()
 
-        self.back_btn = PyButton(text='Back', font=pygame.font.Font(None, 25),
+        self.back_btn = PyButton(text='Back', font=pygame.font.Font(FONT_NAME, 25),
                                  color=TEXT_COLOR, rect=BACK_BTN_RECT,
                                  action=back_action)
         self.all_btns.append(self.back_btn)
@@ -84,7 +84,7 @@ class PreplayWindow(BaseWindow):
 
     def tick(self, screen: pygame.Surface) -> None:
         self.choose_level_table.render(screen)
-        font = pygame.font.Font(None, 75)
+        font = pygame.font.Font(FONT_NAME, 75)
         for i, line in enumerate(['Выберите уровень',
                                   'для прохождения'], start=1):
             widget = font.render(line, True, TEXT_COLOR)
