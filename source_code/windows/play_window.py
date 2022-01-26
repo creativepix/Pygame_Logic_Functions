@@ -17,7 +17,7 @@ from source_code.constants import TEXT_COLOR, SAVE_BTN_RECT, \
     RESULT_TITLES_INDENT, RESULTS_FONT_SIZE, SCORE_GAME_RECT, \
     BEST_GAME_SCORE_RECT, SCORE_FONT_SIZE, RESULTS_MAX_SYMBOLS, RESULTS_WIDTH, \
     STARTING_LEFTTOP_BLOCKS_WITHOUT_STRUCTURE, BLOCK_SIZE_IN_BLOCK_LIST, \
-    DESCRIPTION_BTN_RECT, FONT_NAME
+    DESCRIPTION_BTN_RECT, FONT_NAME, RESULTS_HEIGHT
 from source_code.middlewares.screen_ration import get_current_rect_ration, \
     get_current_vertical_ration
 from source_code.middlewares.splitting_line import split_line
@@ -195,7 +195,7 @@ class PlayWindow(BaseGameWindow):
             math.ceil(len(list(results.keys())[0]) / RESULTS_MAX_SYMBOLS),
             math.ceil(len(list(results.values())[0][0]) / RESULTS_MAX_SYMBOLS),
             math.ceil(len(list(results.values())[0][1]) / RESULTS_MAX_SYMBOLS))
-        cell_size = (RESULTS_WIDTH, 20 * max_rows)
+        cell_size = (RESULTS_WIDTH, RESULTS_HEIGHT * max_rows)
 
         # идёт распределение на правильные/неправильные для того, чтобы
         # в таблицу результатов сначала вывести плохие результаты
